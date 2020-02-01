@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Sanal</string>
+
+
+    <string name="signInButton"></string>
+
+    <string name="signOutButton"></string>
+    <string name="server_client_id">335511299747-3eicbvebos6e5ard3d5jd1po34otq1ig.apps.googleusercontent.com</string>
 </resources>

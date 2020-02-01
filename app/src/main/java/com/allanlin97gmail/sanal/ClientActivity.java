@@ -3,8 +3,10 @@ package com.allanlin97gmail.sanal;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -14,13 +16,15 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 public class ClientActivity extends AppCompatActivity {
 
-    TextView name, email;
+    TextView name, email, id;
     Button signoutButton;
+
 
     GoogleSignInClient mGoogleSignInClient;
 
@@ -30,16 +34,20 @@ public class ClientActivity extends AppCompatActivity {
         setContentView(R.layout.activity_client);
 
         // Configure sign-in to request the user's ID, email address, and basic
-// profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
+                //.requestIdToken(getString(R.string.server_client_id))
                 .build();
+
+
 
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         name = findViewById(R.id.nameText);
         email = findViewById(R.id.emailText);
+        id = findViewById(R.id.idText);
         signoutButton = findViewById(R.id.signoutButton);
 
         signoutButton.setOnClickListener(new View.OnClickListener() {
@@ -47,11 +55,9 @@ public class ClientActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 switch (view.getId()) {
-                    // ...
                     case R.id.signoutButton:
                         signOut();
                         break;
-                    // ...
                 }
 
             }
@@ -65,11 +71,21 @@ public class ClientActivity extends AppCompatActivity {
             String personFamilyName = acct.getFamilyName();
             String personEmail = acct.getEmail();
             String personId = acct.getId();
+            String tokenID = acct.getIdToken();
             Uri personPhoto = acct.getPhotoUrl();
 
             name.setText(personName);
             email.setText(personEmail);
+            id.setText(tokenID);
+
+
+
+            Log.d("tokenid", tokenID);
         }
+
+
+
+
     }
 
     private void signOut() {
@@ -82,4 +98,5 @@ public class ClientActivity extends AppCompatActivity {
                     }
                 });
     }
+
 }

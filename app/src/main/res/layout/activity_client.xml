@@ -26,6 +26,15 @@
 
     </TextView>
 
+    <TextView
+        android:id="@+id/idText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="google id">
+
+
+    </TextView>
+
     <Button
         android:id="@+id/signoutButton"
         android:layout_width="match_parent"
