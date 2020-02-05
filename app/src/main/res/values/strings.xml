@@ -8,6 +8,7 @@
     <string name="signOutButton">Sign Out</string>
 
     <!-- Client Text -->
+    <string name="clientTitle">Please Add a Client</string>
     <string name="clientName">Client Name</string>
     <string name="clientPhone">Client Name</string>
     <string name="clientAddress">Client Name</string>
@@ -34,5 +35,8 @@
     <string name="extinguisherNSDate">NSDate</string>
     <string name="extinguisherComment">Comment</string>
     <string name="extinguisherStatus">Status</string>
-    
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>
