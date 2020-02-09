@@ -16,14 +16,17 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class ClientActivity extends AppCompatActivity {
+
+public class SettingActivity extends AppCompatActivity {
 
     TextView name, email, id;
     Button signoutButton;
+
+    FloatingActionButton addClientFab;
 
 
     GoogleSignInClient mGoogleSignInClient;
@@ -31,7 +34,7 @@ public class ClientActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_client);
+        setContentView(R.layout.activity_setting);
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
@@ -82,10 +85,6 @@ public class ClientActivity extends AppCompatActivity {
 
             Log.d("tokenid", tokenID);
         }
-
-
-
-
     }
 
     private void signOut() {
@@ -93,7 +92,9 @@ public class ClientActivity extends AppCompatActivity {
                 .addOnCompleteListener(this, new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        Toast.makeText(ClientActivity.this, "Signed Out", Toast.LENGTH_LONG).show();
+                        Toast.makeText(SettingActivity.this, "Signed Out", Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(SettingActivity.this, LoginInActivity.class);
+                        startActivity(intent);
                         finish();
                     }
                 });
