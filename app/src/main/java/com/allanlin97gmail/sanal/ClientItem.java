@@ -1,5 +1,7 @@
 package com.allanlin97gmail.sanal;
 
+import android.content.Context;
+
 public class ClientItem {
     private String clientName;
     private String clientEmail;
