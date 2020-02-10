@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
         // ArrayList for client info
         ArrayList<ClientItem> clientList = new ArrayList<>();
-        clientList.add(new ClientItem("as", "asd","asd","sda"));
+        clientList.add(new ClientItem("Bob", "bob@gmail.com","5199838383","4514 Dougall"));
         clientList.add(new ClientItem("2", "2","2","2"));
         clientList.add(new ClientItem("as", "asd","asd","sda"));
 

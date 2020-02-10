@@ -1,8 +1,11 @@
 package com.allanlin97gmail.sanal;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -11,8 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientViewHolder> {
-    private ArrayList<ClientItem> clientList;
 
+    private ArrayList<ClientItem> clientList;
 
     public static class ClientViewHolder extends  RecyclerView.ViewHolder {
 
@@ -27,6 +30,15 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
             email = itemView.findViewById(R.id.clientEmail);
             phone = itemView.findViewById(R.id.clientPhoneNumber);
             address = itemView.findViewById(R.id.clientAddress);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(v.getContext(), BuildingActivity.class);
+                    v.getContext().startActivity(intent);
+                }
+            });
+
 
 
         }
