@@ -118,7 +118,7 @@
             android:text="@string/extinguisherMDate" />
 
         <EditText
-            android:layout_width="match_parent"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:id="@+id/extinguisherMDate"
             android:clickable="true" />
@@ -201,6 +201,7 @@
             android:text="@string/extinguisherStatus"/>
 
         <Spinner
+            android:id="@+id/extinguisherStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -211,18 +212,21 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <Button
             android:id="@+id/button1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Take Photo">
+            android:text="Take Photo"
+            android:layout_gravity="center">
         </Button>
+
         <ImageView
             android:id="@+id/imageView1"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content">
+            android:layout_height="150dp"
+            android:layout_width="150dp"
+            android:layout_gravity="center">
 
         </ImageView>
 
