@@ -36,6 +36,11 @@
     <string name="extinguisherComment">Comment</string>
     <string name="extinguisherStatus">Status</string>
 
+    <!-- FloatingActionButton Menu -->
+    <string name="AddBuilding">Add Building</string>
+    <string name="AddExtinguisher">Add Extinguisher</string>
+    <string name="GeneratePDF">Generate PDF</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 

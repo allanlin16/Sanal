@@ -18,7 +18,8 @@
             android:padding="10dp"
             android:textStyle="normal|bold"
             android:textSize="20dp"
-            android:gravity="center_horizontal" />
+            android:gravity="center_horizontal"
+            android:textColor="@color/primary_text"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/clientRecyclerView"
@@ -28,12 +29,24 @@
             android:scrollbars="vertical" />
     </LinearLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+<!--        android:id="@+id/addClientFab"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_alignParentRight="true"-->
+<!--        android:layout_alignParentBottom="true"-->
+<!--        android:clickable="true"-->
+<!--        app:srcCompat="@drawable/ic_add_black_24dp" />-->
+
+    <com.github.clans.fab.FloatingActionButton
         android:id="@+id/addClientFab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:clickable="true"
-        app:srcCompat="@drawable/ic_add_black_24dp" />
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="8dp"
+        android:src="@drawable/ic_add_black_24dp" />
+
+
 </RelativeLayout>

@@ -1,6 +1,7 @@
 package com.allanlin97gmail.sanal;
 
 import androidx.appcompat.app.AppCompatActivity;
+import com.github.clans.fab.FloatingActionButton;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -11,7 +12,6 @@ import android.widget.EditText;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +23,7 @@ public class BuildingActivity extends AppCompatActivity {
     ExpandableListAdapter expandableListAdapter;
     List<String> expandableListTitle;
     HashMap<String, List<String>> expandableListDetail;
-    FloatingActionButton addBuildingFab;
+    FloatingActionButton addBuildingFab, addExtinguisherFab, generatePDFFab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,14 +31,33 @@ public class BuildingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_building);
 
         addBuildingFab = findViewById(R.id.addBuildingFab);
+        addExtinguisherFab = findViewById(R.id.addExtinguisherFab);
+        generatePDFFab = findViewById(R.id.generatePDFFab);
+
+        //when add building fab clicked open form for adding building
         addBuildingFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dialogBox();
+                buildingDialogBox();
 
             }
         });
 
+        addExtinguisherFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                extinguisherDialogBox();
+            }
+        });
+
+        generatePDFFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //pdfDialogBox();
+            }
+        });
+
+        //set the expanablelistview
         expandableListView = findViewById(R.id.expandableListView);
         expandableListDetail = ExpandableListViewData.getData();
         expandableListTitle = new ArrayList<String>(expandableListDetail.keySet());
@@ -58,20 +77,23 @@ public class BuildingActivity extends AppCompatActivity {
         });
     }
 
-    public void dialogBox() {
+    // opens dialog box adding building form
+    public void buildingDialogBox() {
 
         final View dialogView = View.inflate(this,R.layout.add_building,null);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder.setMessage("Add Building");
 
-        // set up the edit text
-        final EditText buildingName = (EditText) dialogView.findViewById(R.id.addBuildingName);
-        final EditText buildingAddress = (EditText) dialogView.findViewById(R.id.addBuildingAddress);
-        final EditText buildingCity = (EditText) dialogView.findViewById(R.id.addBuildingCity);
-        final EditText buildingPostalCode = (EditText) dialogView.findViewById(R.id.addBuildingPostalCode);
 
-        final EditText extinguisherArea = (EditText) dialogView.findViewById(R.id.addExtinguisherArea);
-        final EditText extinguisherLocation = (EditText) dialogView.findViewById(R.id.addExtinguisherLocation);
+
+        // set up the edit text
+        final EditText buildingName = dialogView.findViewById(R.id.addBuildingName);
+        final EditText buildingAddress = dialogView.findViewById(R.id.addBuildingAddress);
+        final EditText buildingCity = dialogView.findViewById(R.id.addBuildingCity);
+        final EditText buildingPostalCode = dialogView.findViewById(R.id.addBuildingPostalCode);
+
+        final EditText extinguisherArea = dialogView.findViewById(R.id.addExtinguisherArea);
+        final EditText extinguisherLocation = dialogView.findViewById(R.id.addExtinguisherLocation);
 
         alertDialogBuilder.setPositiveButton("Create",
                 new DialogInterface.OnClickListener() {
@@ -85,8 +107,6 @@ public class BuildingActivity extends AppCompatActivity {
 
                         String extinguisherChild = extinguisherArea.getText().toString() + " " + extinguisherLocation.getText().toString();
 
-
-                        HashMap<String, List<String>> expandableListViewData = new HashMap<String, List<String>>();
 
                         expandableListTitle.add(buildingName.getText().toString());
                         List<String> buildingExtinguisher = new ArrayList<String>();
@@ -111,5 +131,15 @@ public class BuildingActivity extends AppCompatActivity {
         alertDialog.setView(dialogView);
         alertDialog.show();
     }
+
+    public void extinguisherDialogBox() {
+        System.out.println("hi");
+    }
+
+
+
+
+
+
 
 }
