@@ -143,7 +143,8 @@ public class BuildingActivity extends AppCompatActivity {
                 mDateEditText, hDateEditText, sDateEditText, commentEditText;
         final Spinner typeSpinner, ratingSpiner;
         final Button photoButtton;
-        
+
+
         alertDialogBuilder.setPositiveButton("Create",
                 new DialogInterface.OnClickListener() {
 
