@@ -1,3 +1,42 @@
 <resources>
     <string name="app_name">Sanal</string>
+    <string name="server_client_id">335511299747-3eicbvebos6e5ard3d5jd1po34otq1ig.apps.googleusercontent.com</string>
+
+
+    <!-- Button Text -->
+    <string name="signInButton">Sign In</string>
+    <string name="signOutButton">Sign Out</string>
+
+    <!-- Client Text -->
+    <string name="clientTitle">Please Add a Client</string>
+    <string name="clientName">Client Name</string>
+    <string name="clientPhone">Client Name</string>
+    <string name="clientAddress">Client Name</string>
+    <string name="clientEmail">Client Email</string>
+
+    <!-- Building Text -->
+    <string name="buildingName">Building Name</string>
+    <string name="buildingAddress">Building Address</string>
+    <string name="buildingCity">Building City</string>
+    <string name="buildingPostalCode">Building Postal Code</string>
+
+    <!-- Extinguisher Text -->
+    <string name="extinguisherMake">Make</string>
+    <string name="extinguisherSerialNumber">Serial Number</string>
+    <string name="extinguisherBarcode">Barcode</string>
+    <string name="extinguisherArea">Area</string>
+    <string name="extinguisherLocation">Location</string>
+    <string name="extinguisherType">Type</string>
+    <string name="extinguisherRating">Rating</string>
+    <string name="extinguisherSize">Size</string>
+    <string name="extinguisherMDate">MDate</string>
+    <string name="extinguisherHDate">HDate</string>
+    <string name="extinguisherSDate">SDate</string>
+    <string name="extinguisherNSDate">NSDate</string>
+    <string name="extinguisherComment">Comment</string>
+    <string name="extinguisherStatus">Status</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>
