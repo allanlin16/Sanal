@@ -8,9 +8,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
+import android.widget.Spinner;
 
 
 import java.util.ArrayList;
@@ -53,7 +55,7 @@ public class BuildingActivity extends AppCompatActivity {
         generatePDFFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //pdfDialogBox();
+                pdfDialogBox();
             }
         });
 
@@ -133,7 +135,73 @@ public class BuildingActivity extends AppCompatActivity {
     }
 
     public void extinguisherDialogBox() {
-        System.out.println("hi");
+        final View dialogView = View.inflate(this,R.layout.add_extinguisher,null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage("Add Extinguisher");
+
+        final EditText makeEditText, serialNumberEditText, barcodeEditText, areaEditText,
+                mDateEditText, hDateEditText, sDateEditText, commentEditText;
+        final Spinner typeSpinner, ratingSpiner;
+        final Button photoButtton;
+        
+        alertDialogBuilder.setPositiveButton("Create",
+                new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        System.out.println("hi");
+
+                    }
+                });
+
+        alertDialogBuilder.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+
+                    }
+                });
+
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.setView(dialogView);
+        alertDialog.show();
+    }
+
+    public void pdfDialogBox() {
+        final View dialogView = View.inflate(this,R.layout.generate_pdf,null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage("Select Building to Generate PDF");
+
+        Spinner buildingPDFSPinner = dialogView.findViewById(R.id.buildingPDFSpinner);
+
+
+        alertDialogBuilder.setPositiveButton("Create",
+                new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+
+
+                        System.out.println("hi");
+
+                    }
+                });
+
+        alertDialogBuilder.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+
+                    }
+                });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.setView(dialogView);
+        alertDialog.show();
+
     }
 
 

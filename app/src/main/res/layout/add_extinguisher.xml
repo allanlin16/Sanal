@@ -6,15 +6,22 @@
     android:orientation="vertical"
     tools:context=".ExtinguisherActivity">
 
-    <TextView
-        android:text="Extinguisher Info"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/recent_title_label"
-        android:padding="10dp"
-        android:textStyle="normal|bold"
-        android:textSize="20dp"
-        android:gravity="center_horizontal" />
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Please select building"
+            android:layout_weight="1"/>
+
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
 
 
     <LinearLayout
@@ -42,9 +49,9 @@
     </LinearLayout>
 
     <LinearLayout
-    android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
         <EditText
             android:layout_width="match_parent"
@@ -56,9 +63,9 @@
     </LinearLayout>
 
     <LinearLayout
-    android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
         <EditText
             android:layout_width="match_parent"
@@ -233,11 +240,5 @@
 
     </LinearLayout>
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Update Info">
-
-    </Button>
 
 </LinearLayout>
