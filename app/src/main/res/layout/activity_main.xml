@@ -10,15 +10,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-            <TextView
-                android:text="Clients"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/recent_title_label"
-                android:padding="10dp"
-                android:textStyle="normal|bold"
-                android:textSize="20dp"
-                android:gravity="center_horizontal" />
+        <TextView
+            android:text="Clients"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/recent_title_label"
+            android:padding="10dp"
+            android:textStyle="normal|bold"
+            android:textSize="20dp"
+            android:gravity="center_horizontal" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/clientRecyclerView"
@@ -28,9 +28,6 @@
             android:scrollbars="vertical" />
     </LinearLayout>
 
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addClientFab"
         android:layout_width="wrap_content"
@@ -39,5 +36,4 @@
         android:layout_alignParentBottom="true"
         android:clickable="true"
         app:srcCompat="@drawable/ic_add_black_24dp" />
-
 </RelativeLayout>
