@@ -188,28 +188,28 @@ public class ExtinguisherActivity extends AppCompatActivity {
 
 
     private void updateLabel() {
-        String myFormat = "yyyy/mm/dd"; //In which you need put here
+        String myFormat = "yyyy-MM-dd"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         mDateEditText.setText(sdf.format(myCalendar.getTime()));
 
     }
 
     private void updateHLabel() {
-        String myFormat = "yyyy/mm/dd"; //In which you need put here
+        String myFormat = "yyyy-MM-dd"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         hDateEditText.setText(sdf.format(myCalendar.getTime()));
 
     }
 
     private void updateSLabel() {
-        String myFormat = "yyyy/mm/dd"; //In which you need put here
+        String myFormat = "yyyy-MM-dd"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         sDateEditText.setText(sdf.format(myCalendar.getTime()));
 
     }
 
     private void updateNSLabel() {
-        String myFormat = "yyyy/mm/dd"; //In which you need put here
+        String myFormat = "yyyy-MM-dd"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         nSDateEditText.setText(sdf.format(myCalendar.getTime()));
 

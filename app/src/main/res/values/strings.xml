@@ -29,10 +29,10 @@
     <string name="extinguisherType">Type</string>
     <string name="extinguisherRating">Rating</string>
     <string name="extinguisherSize">Size</string>
-    <string name="extinguisherMDate">MDate</string>
-    <string name="extinguisherHDate">HDate</string>
-    <string name="extinguisherSDate">SDate</string>
-    <string name="extinguisherNSDate">NSDate</string>
+    <string name="extinguisherMDate">Manufacture Date</string>
+    <string name="extinguisherHDate">H-Test Date</string>
+    <string name="extinguisherSDate">Serviced Date</string>
+    <string name="extinguisherNSDate">Next Service Date</string>
     <string name="extinguisherComment">Comment</string>
     <string name="extinguisherStatus">Status</string>
 
