@@ -18,6 +18,7 @@ import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toolbar;
 
 
 import java.text.SimpleDateFormat;
@@ -43,6 +44,9 @@ public class BuildingActivity extends AppCompatActivity {
         addBuildingFab = findViewById(R.id.addBuildingFab);
         addExtinguisherFab = findViewById(R.id.addExtinguisherFab);
         generatePDFFab = findViewById(R.id.generatePDFFab);
+
+        //add back button
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         //when add building fab clicked open form for adding building
         addBuildingFab.setOnClickListener(new View.OnClickListener() {
@@ -85,6 +89,7 @@ public class BuildingActivity extends AppCompatActivity {
                 return false;
             }
         });
+
     }
 
     // opens dialog box adding building form

@@ -254,7 +254,7 @@ public class ExtinguisherActivity extends AppCompatActivity {
 
                 } else {
 
-                    Toast.makeText(this,"Permission Canceled, Now your application cannot access CAMERA.", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(this,"Permission Canceled, Now your application cannot access CAMERA.", Toast.LENGTH_LONG).show();
 
                 }
                 break;
