@@ -18,7 +18,17 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.github.clans.fab.FloatingActionButton;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -29,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView.LayoutManager layoutManager;
     FloatingActionButton addClientFab;
     ArrayList<ClientItem> clientList;
-    ImageView editDeleteMenu;
+    RequestQueue requestQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         addClientFab = findViewById(R.id.addClientFab);
+        requestQueue = Volley.newRequestQueue(this);
 
         addClientFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,19 +68,66 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        jsonParse();
+
 
         // ArrayList for client info
-        clientList = new ArrayList<>();
-        clientList.add(new ClientItem("Bob", "bob@example.com","5190000000","4514 Example St"));
-        clientList.add(new ClientItem("Allan", "allan@example.com","5190000000","4514 Example Ave"));
+        //clientList = new ArrayList<>();
+//        clientList.add(new ClientItem("Bob", "bob@example.com","5190000000","4514 Example St"));
+//        clientList.add(new ClientItem("Allan", "allan@example.com","5190000000","4514 Example Ave"));
 
         recyclerView = findViewById(R.id.clientRecyclerView);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
-        adapter = new ClientAdapter(clientList);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
+//        adapter = new ClientAdapter(clientList);
+//        recyclerView.setLayoutManager(layoutManager);
+//        recyclerView.setAdapter(adapter);
+
     }
+
+    private void jsonParse() {
+        String url = "https://alin.scweb.ca/SanalAPI/client";
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray jsonArray = response.getJSONArray("data");
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject client = jsonArray.getJSONObject(i);
+                                String name = client.getString("client_name");
+                                String email = client.getString("client_email");
+                                String phone = client.getString("client_phone");
+                                String address = client.getString("client_address");
+                                Log.d("sdf", name + email + phone + address);
+
+
+                                clientList = new ArrayList<>();
+                                clientList.add(new ClientItem(name, email, phone, address));
+                                adapter = new ClientAdapter(clientList);
+                                recyclerView.setLayoutManager(layoutManager);
+                                recyclerView.setAdapter(adapter);
+
+
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO: Handle error
+                        error.printStackTrace();
+                    }
+                });
+        requestQueue.add(jsonObjectRequest);
+    }
+
+
 
     // display the app bar menu
     @Override
