@@ -3,9 +3,12 @@ package com.allanlin97gmail.sanal;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,13 +26,50 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
         TextView email;
         TextView phone;
         TextView address;
+        ImageView editDeleteButton;
 
-        public ClientViewHolder(View itemView) {
+
+
+        public ClientViewHolder(final View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.clientName);
             email = itemView.findViewById(R.id.clientEmail);
             phone = itemView.findViewById(R.id.clientPhoneNumber);
             address = itemView.findViewById(R.id.clientAddress);
+
+//            editDeleteButton =  itemView.findViewById(R.id.menuButton);
+//            editDeleteButton.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    Context context;
+//                    PopupMenu popup = new PopupMenu(context, v);
+//
+//                    /** Adding menu items to the popumenu */
+//                    popup.getMenuInflater().inflate(R.menu.edit_delete_menu, popup.getMenu());
+//                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+//
+//                        @Override
+//                        public boolean onMenuItemClick(MenuItem item) {
+//                            // TODO Auto-generated method stub
+//                            switch (item.getItemId()) {
+//                                case R.id.edit:
+//                                    System.out.println("asd");
+//                                    break;
+//
+//                                case R.id.delete:
+//                                    System.out.println("asd");
+//                                    break;
+//
+//                                default:
+//                                    break;
+//                            }
+//
+//                            return false;
+//                        }
+//                    });
+//                    popup.show();
+//                }
+//            });
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
