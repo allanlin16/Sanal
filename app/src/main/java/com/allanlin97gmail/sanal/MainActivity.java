@@ -9,11 +9,14 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.PopupMenu;
 
 import com.github.clans.fab.FloatingActionButton;
 
@@ -26,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView.LayoutManager layoutManager;
     FloatingActionButton addClientFab;
     ArrayList<ClientItem> clientList;
+    ImageView editDeleteMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,11 +47,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        final View inflatedView = getLayoutInflater().inflate(R.layout.client_item, null);
+        final ImageView editDeleteMenu =  inflatedView.findViewById(R.id.menuButton);
+
+        editDeleteMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("d", "asd");
+            }
+        });
+
+
         // ArrayList for client info
         clientList = new ArrayList<>();
-        clientList.add(new ClientItem("Bob", "bob@gmail.com","5199838383","4514 Dougall"));
-        clientList.add(new ClientItem("2", "2","2","2"));
-        clientList.add(new ClientItem("as", "asd","asd","sda"));
+        clientList.add(new ClientItem("Bob", "bob@example.com","5190000000","4514 Example St"));
+        clientList.add(new ClientItem("Allan", "allan@example.com","5190000000","4514 Example Ave"));
 
         recyclerView = findViewById(R.id.clientRecyclerView);
         recyclerView.setHasFixedSize(true);
@@ -56,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
     }
-
 
     // display the app bar menu
     @Override
@@ -78,6 +91,18 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    public void editDeleteMenu(View view) {
+
+        PopupMenu popup = new PopupMenu(this, view);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.edit_delete_menu, popup.getMenu());
+
+
+        popup.show();
+
+    }
+
 
     public void dialogBox() {
 

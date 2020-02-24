@@ -53,9 +53,9 @@
         fab:menu_shadowRadius="4dp"
         fab:menu_shadowXOffset="1dp"
         fab:menu_shadowYOffset="3dp"
-        fab:menu_colorNormal="#DA4336"
-        fab:menu_colorPressed="#E75043"
-        fab:menu_colorRipple="#99FFFFFF"
+        app:menu_colorNormal="@color/colorAccent"
+        app:menu_colorPressed="@color/colorAccent"
+        fab:menu_colorRipple="@styles/menu_colorNormal"
         fab:menu_animationDelayPerItem="50"
         fab:menu_icon="@drawable/fab_add"
         fab:menu_buttonSpacing="0dp"
@@ -91,7 +91,9 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_location_city_black_24dp"
             fab:fab_size="mini"
-            app:fab_label="@string/AddBuilding"/>
+            app:fab_label="@string/AddBuilding"
+            app:fab_colorNormal="@color/colorPrimary"
+            app:fab_colorPressed="@color/colorPrimaryDark"/>
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/addExtinguisherFab"
@@ -99,7 +101,9 @@
             android:layout_height="wrap_content"
             android:src="@drawable/fire_extinguisher"
             fab:fab_size="mini"
-            app:fab_label="@string/AddExtinguisher"/>
+            app:fab_label="@string/AddExtinguisher"
+            app:fab_colorNormal="@color/colorPrimary"
+            app:fab_colorPressed="@color/colorPrimaryDark"/>
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/generatePDFFab"
@@ -107,7 +111,9 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_picture_as_pdf_black_24dp"
             fab:fab_size="mini"
-            app:fab_label="@string/GeneratePDF"/>
+            app:fab_label="@string/GeneratePDF"
+            app:fab_colorNormal="@color/colorPrimary"
+            app:fab_colorPressed="@color/colorPrimaryDark"/>
 
     </com.github.clans.fab.FloatingActionMenu>
 

@@ -25,7 +25,8 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/clientName"
                 android:layout_weight="1"
-                android:textColor="@color/primary_text"/>
+                android:textColor="@color/primary_text"
+                android:textSize="20sp"/>
 
             <ImageView
                 android:id="@+id/menuButton"
