@@ -1,12 +1,9 @@
 package com.allanlin97gmail.sanal;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
-import android.Manifest;
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -17,7 +14,6 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -37,6 +33,9 @@ public class ExtinguisherActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_extinguisher);
+
+        //back button for extinguisher activity
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         String[] typeSpinner = new String[] {
                  "Water", "Foam", "Dry Powder", "CO2", "Wet Chemical"
@@ -77,7 +76,7 @@ public class ExtinguisherActivity extends AppCompatActivity {
         imageView = findViewById(R.id.imageView1);
         photoButton = findViewById(R.id.button1);
 
-        EnableRuntimePermission();
+        //EnableRuntimePermission();
         imageView.setRotation(90);
 
         photoButton.setOnClickListener(new View.OnClickListener() {
@@ -225,40 +224,40 @@ public class ExtinguisherActivity extends AppCompatActivity {
         }
     }
 
-    public void EnableRuntimePermission(){
-
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                Manifest.permission.CAMERA))
-        {
-
-            Toast.makeText(this,"CAMERA permission allows us to Access CAMERA app", Toast.LENGTH_LONG).show();
-
-        } else {
-
-            ActivityCompat.requestPermissions(this,new String[]{
-                    Manifest.permission.CAMERA}, RequestPermissionCode);
-
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int RC, String per[], int[] PResult) {
-
-        switch (RC) {
-
-            case RequestPermissionCode:
-
-                if (PResult.length > 0 && PResult[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    Toast.makeText(this,"Permission Granted, Now your application can access CAMERA.", Toast.LENGTH_LONG).show();
-
-                } else {
-
-                    //Toast.makeText(this,"Permission Canceled, Now your application cannot access CAMERA.", Toast.LENGTH_LONG).show();
-
-                }
-                break;
-        }
-    }
+//    public void EnableRuntimePermission(){
+//
+//        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+//                Manifest.permission.CAMERA))
+//        {
+//
+//            Toast.makeText(this,"CAMERA permission allows us to Access CAMERA app", Toast.LENGTH_LONG).show();
+//
+//        } else {
+//
+//            ActivityCompat.requestPermissions(this,new String[]{
+//                    Manifest.permission.CAMERA}, RequestPermissionCode);
+//
+//        }
+//    }
+//
+//    @Override
+//    public void onRequestPermissionsResult(int RC, String per[], int[] PResult) {
+//
+//        switch (RC) {
+//
+//            case RequestPermissionCode:
+//
+//                if (PResult.length > 0 && PResult[0] == PackageManager.PERMISSION_GRANTED) {
+//
+//                    Toast.makeText(this,"Permission Granted, Now your application can access CAMERA.", Toast.LENGTH_LONG).show();
+//
+//                } else {
+//
+//                    //Toast.makeText(this,"Permission Canceled, Now your application cannot access CAMERA.", Toast.LENGTH_LONG).show();
+//
+//                }
+//                break;
+//        }
+//    }
 
 }
