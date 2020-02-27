@@ -97,10 +97,12 @@ public class MainActivity extends AppCompatActivity {
                             JSONArray jsonArray = response.getJSONArray("data");
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject client = jsonArray.getJSONObject(i);
+
                                 String name = client.getString("client_name");
                                 String email = client.getString("client_email");
                                 String phone = client.getString("client_phone");
                                 String address = client.getString("client_address");
+
                                 Log.d("sdf", name + email + phone + address);
 
 
