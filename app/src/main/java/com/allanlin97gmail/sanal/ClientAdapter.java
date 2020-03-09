@@ -2,6 +2,7 @@ package com.allanlin97gmail.sanal;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,8 +29,6 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
         TextView address;
         ImageView editDeleteButton;
 
-
-
         public ClientViewHolder(final View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.clientName);
@@ -37,39 +36,40 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
             phone = itemView.findViewById(R.id.clientPhoneNumber);
             address = itemView.findViewById(R.id.clientAddress);
 
-//            editDeleteButton =  itemView.findViewById(R.id.menuButton);
-//            editDeleteButton.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Context context;
-//                    PopupMenu popup = new PopupMenu(context, v);
-//
-//                    /** Adding menu items to the popumenu */
-//                    popup.getMenuInflater().inflate(R.menu.edit_delete_menu, popup.getMenu());
-//                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-//
-//                        @Override
-//                        public boolean onMenuItemClick(MenuItem item) {
-//                            // TODO Auto-generated method stub
-//                            switch (item.getItemId()) {
-//                                case R.id.edit:
-//                                    System.out.println("asd");
-//                                    break;
-//
-//                                case R.id.delete:
-//                                    System.out.println("asd");
-//                                    break;
-//
-//                                default:
-//                                    break;
-//                            }
-//
-//                            return false;
-//                        }
-//                    });
-//                    popup.show();
-//                }
-//            });
+            editDeleteButton =  itemView.findViewById(R.id.menuButton);
+            editDeleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d("hi", "imagebutton presses");
+
+                    PopupMenu popup = new PopupMenu(itemView.getContext(), v);
+
+                    /** Adding menu items to the popumenu */
+                    popup.getMenuInflater().inflate(R.menu.edit_delete_menu, popup.getMenu());
+                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            // TODO Auto-generated method stub
+                            switch (item.getItemId()) {
+                                case R.id.edit:
+                                    System.out.println("asd");
+                                    break;
+
+                                case R.id.delete:
+                                    System.out.println("asd");
+                                    break;
+
+                                default:
+                                    break;
+                            }
+
+                            return false;
+                        }
+                    });
+                    popup.show();
+                }
+            });
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -101,6 +101,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
     public void onBindViewHolder(@NonNull ClientViewHolder holder, int position) {
         ClientItem item = clientList.get(position);
 
+        holder.editDeleteButton.setImageResource(item.getImageResource());
         holder.name.setText(item.getClientName());
         holder.email.setText(item.getClientEmail());
         holder.phone.setText(item.getClientPhoneNumber());
