@@ -1,19 +1,18 @@
 package com.allanlin97gmail.sanal;
 
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import androidx.annotation.NonNull;
-
 public class ClientItem implements Parcelable {
+    private long id;
     private String clientName;
     private String clientEmail;
     private String clientAddress;
     private String clientPhoneNumber;
     private  int imageResource;
 
-    public ClientItem(int imageResource, String name, String email, String phone, String address) {
+    public ClientItem(long id, int imageResource, String name, String email, String phone, String address) {
+        this.id = id;
         this.imageResource = imageResource;
         this.clientName = name;
         this.clientEmail = email;
@@ -21,7 +20,6 @@ public class ClientItem implements Parcelable {
         this.clientPhoneNumber = phone;
 
     }
-
 
     protected ClientItem(Parcel in) {
         clientName = in.readString();
@@ -42,6 +40,14 @@ public class ClientItem implements Parcelable {
             return new ClientItem[size];
         }
     };
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public int getImageResource() {
         return imageResource;

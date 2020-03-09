@@ -15,14 +15,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.PopupMenu;
+import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.github.clans.fab.FloatingActionButton;
 
@@ -30,6 +31,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -59,12 +61,12 @@ public class MainActivity extends AppCompatActivity {
 
         // ArrayList for client info
        clientList = new ArrayList<>();
-       clientList.add(new ClientItem(R.drawable.ic_more_vert_black_24dp, "Bob", "bob@example.com","5190000000","4514 Example St"));
-//        clientList.add(new ClientItem("Allan", "allan@example.com","5190000000","4514 Example Ave"));
+       //clientList.add(new ClientItem(1, R.drawable.ic_more_vert_black_24dp, "Bob", "bob@example.com","5190000000","4514 Example St"));
+       //clientList.add(new ClientItem(2 , R.drawable.ic_more_vert_black_24dp, "Allan", "allan@example.com","5190000000","4514 Example Ave"));
 
 
         recyclerView = findViewById(R.id.clientRecyclerView);
-        //jsonParse();
+        jsonParse();
 
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
@@ -73,48 +75,48 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
-//    private void jsonParse() {
-//        String url = "https://alin.scweb.ca/SanalAPI/client";
-//
-//        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-//                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-//
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-//                        try {
-//                            JSONArray jsonArray = response.getJSONArray("data");
-//                            for (int i = 0; i < jsonArray.length(); i++) {
-//                                JSONObject client = jsonArray.getJSONObject(i);
-//
-//                                String name = client.getString("client_name");
-//                                String email = client.getString("client_email");
-//                                String phone = client.getString("client_phone");
-//                                String address = client.getString("client_address");
-//
-//                                clientList = new ArrayList<>();
-//                                clientList.add(new ClientItem(R.drawable.ic_more_vert_black_24dp, name, email, phone, address));
-//
-//                                adapter = new ClientAdapter(clientList);
-//                                recyclerView.setLayoutManager(layoutManager);
-//                                recyclerView.setAdapter(adapter);
-//
-//                                Log.d("sdf", name + email + phone + address);
-//                                Log.d("sdf",clientList.toString());
-//                            }
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }, new Response.ErrorListener() {
-//
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        // TODO: Handle error
-//                        error.printStackTrace();
-//                    }
-//                });
-//        requestQueue.add(jsonObjectRequest);
-//    }
+    private void jsonParse() {
+        String url = "https://alin.scweb.ca/SanalAPI/client?user_id=6";
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray jsonArray = response.getJSONArray("data");
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject client = jsonArray.getJSONObject(i);
+
+                                Long id = client.getLong("id");
+                                String name = client.getString("client_name");
+                                String email = client.getString("client_email");
+                                String phone = client.getString("client_phone");
+                                String address = client.getString("client_address");
+
+                                clientList = new ArrayList<>();
+                                clientList.add(new ClientItem(id, R.drawable.ic_more_vert_black_24dp, name, email, phone, address));
+
+                                adapter = new ClientAdapter(clientList);
+                                recyclerView.setLayoutManager(layoutManager);
+                                recyclerView.setAdapter(adapter);
+
+                                Log.d("sdf", name + email + phone + address);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO: Handle error
+                        error.printStackTrace();
+                    }
+                });
+        requestQueue.add(jsonObjectRequest);
+    }
 
 
 
@@ -147,23 +149,52 @@ public class MainActivity extends AppCompatActivity {
         alertDialogBuilder.setMessage("Add Client");
 
         // set up the edit text
-        final EditText name = (EditText) dialogView.findViewById(R.id.addName);
-        final EditText address = (EditText) dialogView.findViewById(R.id.addAddress);
-        final EditText phone = (EditText) dialogView.findViewById(R.id.addPhone);
-        final EditText email = (EditText) dialogView.findViewById(R.id.addEmail);
+        final EditText name =  dialogView.findViewById(R.id.addName);
+        final EditText address = dialogView.findViewById(R.id.addAddress);
+        final EditText phone =  dialogView.findViewById(R.id.addPhone);
+        final EditText email =  dialogView.findViewById(R.id.addEmail);
 
         alertDialogBuilder.setPositiveButton("Create",
                 new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
-                        name.getText().toString().trim().length();
-                        address.getText().toString().trim().length();
-                        phone.getText().toString().trim().length();
-                        email.getText().toString().trim().length();
 
-                        ClientItem clientItem = new ClientItem(R.drawable.ic_more_vert_black_24dp, name.getText().toString(), address.getText().toString(), phone.getText().toString(), email.getText().toString());
-                        clientList.add(clientItem);
+                        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+                        JSONObject object = new JSONObject();
+                        try {
+                            //input your API parameters
+                            object.put("client_name", name.getText().toString());
+                            object.put("client_address",address.getText().toString());
+                            object.put("client_phone",phone.getText().toString());
+                            object.put("client_email",email.getText().toString());
+                            object.put("user_id",6);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        // Enter the correct url for your api service site
+                        String url = "https://alin.scweb.ca/SanalAPI/client?user_id=6";
+                        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, object,
+                                new Response.Listener<JSONObject>() {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        Toast.makeText(getApplicationContext(), "Client Created!", Toast.LENGTH_LONG).show();
+                                    }
+                                }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                error.printStackTrace();
+                            }
+                        });
+                        requestQueue.add(jsonObjectRequest);
+
+//                        name.getText().toString().trim().length();
+//                        address.getText().toString().trim().length();
+//                        phone.getText().toString().trim().length();
+//                        email.getText().toString().trim().length();
+//
+//                        ClientItem clientItem = new ClientItem(1,R.drawable.ic_more_vert_black_24dp, name.getText().toString(), address.getText().toString(), phone.getText().toString(), email.getText().toString());
+//                        clientList.add(clientItem);
                     }
                 });
 
@@ -181,7 +212,8 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.setView(dialogView);
         alertDialog.show();
     }
-
 }
+
+
 
 
