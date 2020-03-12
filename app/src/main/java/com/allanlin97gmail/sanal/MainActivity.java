@@ -17,13 +17,11 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.github.clans.fab.FloatingActionButton;
 
@@ -31,7 +29,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -60,10 +57,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // ArrayList for client info
-       clientList = new ArrayList<>();
-       //clientList.add(new ClientItem(1, R.drawable.ic_more_vert_black_24dp, "Bob", "bob@example.com","5190000000","4514 Example St"));
-       //clientList.add(new ClientItem(2 , R.drawable.ic_more_vert_black_24dp, "Allan", "allan@example.com","5190000000","4514 Example Ave"));
-
+        clientList = new ArrayList<>();
 
         recyclerView = findViewById(R.id.clientRecyclerView);
         jsonParse();
@@ -75,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
+
     private void jsonParse() {
         String url = "https://alin.scweb.ca/SanalAPI/client?user_id=6";
 
@@ -84,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
+                            clientList = new ArrayList<>();
                             JSONArray jsonArray = response.getJSONArray("data");
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject client = jsonArray.getJSONObject(i);
@@ -94,14 +90,13 @@ public class MainActivity extends AppCompatActivity {
                                 String phone = client.getString("client_phone");
                                 String address = client.getString("client_address");
 
-                                clientList = new ArrayList<>();
                                 clientList.add(new ClientItem(id, R.drawable.ic_more_vert_black_24dp, name, email, phone, address));
 
                                 adapter = new ClientAdapter(clientList);
                                 recyclerView.setLayoutManager(layoutManager);
                                 recyclerView.setAdapter(adapter);
 
-                                Log.d("sdf", name + email + phone + address);
+                                Log.d("sdf", id + name + email + phone + address);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -188,13 +183,13 @@ public class MainActivity extends AppCompatActivity {
                         });
                         requestQueue.add(jsonObjectRequest);
 
-//                        name.getText().toString().trim().length();
-//                        address.getText().toString().trim().length();
-//                        phone.getText().toString().trim().length();
-//                        email.getText().toString().trim().length();
-//
-//                        ClientItem clientItem = new ClientItem(1,R.drawable.ic_more_vert_black_24dp, name.getText().toString(), address.getText().toString(), phone.getText().toString(), email.getText().toString());
-//                        clientList.add(clientItem);
+                        name.getText().toString().trim().length();
+                        address.getText().toString().trim().length();
+                        phone.getText().toString().trim().length();
+                        email.getText().toString().trim().length();
+
+                        ClientItem clientItem = new ClientItem(1,R.drawable.ic_more_vert_black_24dp, name.getText().toString(), address.getText().toString(), phone.getText().toString(), email.getText().toString());
+                        clientList.add(clientItem);
                     }
                 });
 
