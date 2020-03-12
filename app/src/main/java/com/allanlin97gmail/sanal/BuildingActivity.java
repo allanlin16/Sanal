@@ -1,13 +1,22 @@
 package com.allanlin97gmail.sanal;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.github.clans.fab.FloatingActionButton;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -18,7 +27,12 @@ import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,12 +48,15 @@ public class BuildingActivity extends AppCompatActivity {
     List<String> expandableListTitle;
     HashMap<String, List<String>> expandableListDetail;
     FloatingActionButton addBuildingFab, addExtinguisherFab, generatePDFFab;
+    ImageView extinguisherImageView;
+    RequestQueue requestQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_building);
 
+        requestQueue = Volley.newRequestQueue(this);
         addBuildingFab = findViewById(R.id.addBuildingFab);
         addExtinguisherFab = findViewById(R.id.addExtinguisherFab);
         generatePDFFab = findViewById(R.id.generatePDFFab);
@@ -77,6 +94,7 @@ public class BuildingActivity extends AppCompatActivity {
         expandableListAdapter = new CustomExpandableListAdapter(this, expandableListTitle, expandableListDetail);
         expandableListView.setAdapter(expandableListAdapter);
 
+        getBuilding();
 
         expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
@@ -88,6 +106,7 @@ public class BuildingActivity extends AppCompatActivity {
                 return false;
             }
         });
+
 
     }
 
@@ -114,19 +133,44 @@ public class BuildingActivity extends AppCompatActivity {
 
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
-                        buildingName.getText().toString().trim().length();
-                        buildingAddress.getText().toString().trim().length();
-                        buildingCity.getText().toString().trim().length();
-                        buildingPostalCode.getText().toString().trim().length();
+
+                        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+                        JSONObject object = new JSONObject();
+                        try {
+                            //input your API parameters
+                            object.put("building_name", buildingName.getText().toString());
+                            object.put("building_address", buildingAddress.getText().toString());
+                            object.put("building_city", buildingCity.getText().toString());
+                            object.put("building_postalcode", buildingPostalCode.getText().toString());
+                            object.put("client_id",6);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        // Enter the correct url for your api service site
+                        String url = "https://alin.scweb.ca/SanalAPI/building?client_id=6";
+                        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, object,
+                                new Response.Listener<JSONObject>() {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        Toast.makeText(getApplicationContext(), "Building Created!", Toast.LENGTH_LONG).show();
+                                    }
+                                }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                error.printStackTrace();
+                            }
+                        });
+                        requestQueue.add(jsonObjectRequest);
 
                         //String extinguisherChild = extinguisherArea.getText().toString() + " " + extinguisherLocation.getText().toString();
 
 
-                        expandableListTitle.add(buildingName.getText().toString());
-                       List<String> buildingExtinguisher = new ArrayList<String>();
-
-                        //buildingExtinguisher.add(extinguisherChild);
-                        expandableListDetail.put(buildingName.getText().toString(), buildingExtinguisher);
+//                        expandableListTitle.add(buildingName.getText().toString() + buildingAddress.getText().toString() + buildingCity.getText().toString());
+//                       List<String> buildingExtinguisher = new ArrayList<>();
+//                       buildingExtinguisher.add("ggg");
+//
+//                        //buildingExtinguisher.add(extinguisherChild);
+//                        expandableListDetail.put(buildingName.getText().toString(), buildingExtinguisher);
 
                     }
                 });
@@ -153,11 +197,15 @@ public class BuildingActivity extends AppCompatActivity {
 
         final EditText makeEditText, serialNumberEditText, barcodeEditText, areaEditText, locationEditText,
                 mDateEditText, hDateEditText, sDateEditText, nSDateEditText, commentEditText;
-        final Spinner typeSpinner, ratingSpinner, statusSpinner;
+        final Spinner typeSpinner, ratingSpinner, statusSpinner, buildingSpinner;
         final Button photoButtton;
-        final ImageView extinguisherImageView;
+        //final ImageView extinguisherImageView;
 
         final Calendar myCalendar = Calendar.getInstance();
+
+        String[] buildingSpinnerArray = new String[] {
+                "Building 1", "Building 2"
+        };
 
         String[] typeSpinnerArray = new String[] {
                 "Water", "Foam", "Dry Powder", "CO2", "Wet Chemical"
@@ -186,6 +234,7 @@ public class BuildingActivity extends AppCompatActivity {
         typeSpinner = dialogView.findViewById(R.id.addTypeSpinner);
         ratingSpinner = dialogView.findViewById(R.id.addRatingSpinner);
         statusSpinner = dialogView.findViewById(R.id.addStatusSpinner);
+        buildingSpinner = dialogView.findViewById(R.id.selectBuildingSpinner);
 
         photoButtton = dialogView.findViewById(R.id.addPhotoButton);
         extinguisherImageView = dialogView.findViewById(R.id.addExtinguisherImageView);
@@ -203,6 +252,11 @@ public class BuildingActivity extends AppCompatActivity {
                 android.R.layout.simple_spinner_item, statusSpinnerArray);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         statusSpinner.setAdapter(adapter3);
+
+        ArrayAdapter<String> adapter4 = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, buildingSpinnerArray);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        buildingSpinner.setAdapter(adapter4);
 
         final DatePickerDialog.OnDateSetListener mDate = new DatePickerDialog.OnDateSetListener(){
             @Override
@@ -305,15 +359,63 @@ public class BuildingActivity extends AppCompatActivity {
             }
         });
 
+        photoButtton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+
+
+                startActivityForResult(intent, 7);
+            }
+        });
+
+
 
         alertDialogBuilder.setPositiveButton("Create",
                 new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
-                        System.out.println("hi");
-
+                        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+                        JSONObject object = new JSONObject();
+                        try {
+                            //input your API parameters
+                            object.put("extinguisher_make", makeEditText.getText().toString());
+                            object.put("extinguisher_serialnumber",serialNumberEditText.getText().toString());
+                            object.put("extinguisher_barcodenumber",barcodeEditText.getText().toString());
+                            object.put("extinguisher_locationarea",areaEditText.getText().toString());
+                            object.put("extinguisher_locationdescription",locationEditText.getText().toString());
+                            object.put("extinguisher_type",typeSpinner.getSelectedItem().toString());
+                            object.put("extinguisher_rating",ratingSpinner.getSelectedItem().toString());
+                            object.put("extinguisher_manufacturedate",mDateEditText.getText().toString());
+                            object.put("extinguisher_htestdate",hDateEditText.getText().toString());
+                            object.put("extinguisher_servicedate",sDateEditText.getText().toString());
+                            object.put("extinguisher_nextservicedate",nSDateEditText.getText().toString());
+                            object.put("extinguisher_status",statusSpinner.getSelectedItem().toString());
+                            object.put("extinguisher_comment",commentEditText.getText().toString());
+                            object.put("extinguisher_photourl","photo");
+                            object.put("building_id",6);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        // Enter the correct url for your api service site
+                        String url = "https://alin.scweb.ca/SanalAPI/extinguisher?building_id=6";
+                        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, object,
+                                new Response.Listener<JSONObject>() {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        Toast.makeText(getApplicationContext(), "Extinguisher Created!", Toast.LENGTH_LONG).show();
+                                    }
+                                }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                error.printStackTrace();
+                            }
+                        });
+                        requestQueue.add(jsonObjectRequest);
                     }
+
+
                 });
 
         alertDialogBuilder.setNegativeButton("Cancel",
@@ -331,12 +433,32 @@ public class BuildingActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == 7 && resultCode == RESULT_OK) {
+
+            Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+
+            extinguisherImageView.setImageBitmap(bitmap);
+            extinguisherImageView.setRotation(90);
+        }
+    }
+
     public void pdfDialogBox() {
         final View dialogView = View.inflate(this,R.layout.generate_pdf,null);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder.setMessage("Select Building to Generate PDF");
 
         Spinner buildingPDFSPinner = dialogView.findViewById(R.id.buildingPDFSpinner);
+
+        String[] statusSpinnerArray = new String[] {
+                "Building 1", "Building 2"
+        };
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, statusSpinnerArray);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        buildingPDFSPinner.setAdapter(adapter);
 
 
         alertDialogBuilder.setPositiveButton("Create",
@@ -363,6 +485,50 @@ public class BuildingActivity extends AppCompatActivity {
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.setView(dialogView);
         alertDialog.show();
+
+    }
+
+    private void getBuilding() {
+        String url = "https://alin.scweb.ca/SanalAPI/building?client_id=6";
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray jsonArray = response.getJSONArray("data");
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject building = jsonArray.getJSONObject(i);
+
+                                Long id = building.getLong("id");
+                                String building_name = building.getString("building_name");
+                                String building_email = building.getString("building_address");
+                                String building_phone = building.getString("building_city");
+                                String building_address = building.getString("building_postalcode");
+
+                                Log.d("asd", building_name);
+                                expandableListTitle.add(building_name);
+
+//                                List<String> buildingExtinguisher = new ArrayList<>();
+//                                buildingExtinguisher.add("ggg");
+//                                expandableListDetail.put(building_name, buildingExtinguisher);
+
+
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO: Handle error
+                        error.printStackTrace();
+                    }
+                });
+        requestQueue.add(jsonObjectRequest);
 
     }
 }
