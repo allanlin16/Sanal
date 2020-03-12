@@ -29,15 +29,7 @@
             android:padding="10dp"
             android:scrollbars="vertical" />
     </LinearLayout>
-
-<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-<!--        android:id="@+id/addClientFab"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_alignParentRight="true"-->
-<!--        android:layout_alignParentBottom="true"-->
-<!--        android:clickable="true"-->
-<!--        app:srcCompat="@drawable/ic_add_black_24dp" />-->
+    
 
     <com.github.clans.fab.FloatingActionButton
         android:id="@+id/addClientFab"

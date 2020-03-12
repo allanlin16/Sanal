@@ -95,8 +95,6 @@ public class MainActivity extends AppCompatActivity {
                                 adapter = new ClientAdapter(clientList);
                                 recyclerView.setLayoutManager(layoutManager);
                                 recyclerView.setAdapter(adapter);
-
-                                Log.d("sdf", id + name + email + phone + address);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -182,11 +180,6 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
                         requestQueue.add(jsonObjectRequest);
-
-                        name.getText().toString().trim().length();
-                        address.getText().toString().trim().length();
-                        phone.getText().toString().trim().length();
-                        email.getText().toString().trim().length();
 
                         ClientItem clientItem = new ClientItem(1,R.drawable.ic_more_vert_black_24dp, name.getText().toString(), address.getText().toString(), phone.getText().toString(), email.getText().toString());
                         clientList.add(clientItem);

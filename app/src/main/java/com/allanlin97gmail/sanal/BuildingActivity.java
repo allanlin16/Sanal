@@ -1,6 +1,13 @@
 package com.allanlin97gmail.sanal;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.github.clans.fab.FloatingActionButton;
 
 import android.app.AlertDialog;
@@ -9,6 +16,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -19,7 +27,12 @@ import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -36,12 +49,14 @@ public class BuildingActivity extends AppCompatActivity {
     HashMap<String, List<String>> expandableListDetail;
     FloatingActionButton addBuildingFab, addExtinguisherFab, generatePDFFab;
     ImageView extinguisherImageView;
+    RequestQueue requestQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_building);
 
+        requestQueue = Volley.newRequestQueue(this);
         addBuildingFab = findViewById(R.id.addBuildingFab);
         addExtinguisherFab = findViewById(R.id.addExtinguisherFab);
         generatePDFFab = findViewById(R.id.generatePDFFab);
@@ -79,6 +94,8 @@ public class BuildingActivity extends AppCompatActivity {
         expandableListAdapter = new CustomExpandableListAdapter(this, expandableListTitle, expandableListDetail);
         expandableListView.setAdapter(expandableListAdapter);
 
+        getBuilding();
+
 
         expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
@@ -90,6 +107,7 @@ public class BuildingActivity extends AppCompatActivity {
                 return false;
             }
         });
+
 
     }
 
@@ -116,19 +134,44 @@ public class BuildingActivity extends AppCompatActivity {
 
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
-                        buildingName.getText().toString().trim().length();
-                        buildingAddress.getText().toString().trim().length();
-                        buildingCity.getText().toString().trim().length();
-                        buildingPostalCode.getText().toString().trim().length();
+
+                        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+                        JSONObject object = new JSONObject();
+                        try {
+                            //input your API parameters
+                            object.put("building_name", buildingName.getText().toString());
+                            object.put("building_address", buildingAddress.getText().toString());
+                            object.put("building_city", buildingCity.getText().toString());
+                            object.put("building_postalcode", buildingPostalCode.getText().toString());
+                            object.put("client_id",6);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        // Enter the correct url for your api service site
+                        String url = "https://alin.scweb.ca/SanalAPI/building?client_id=6";
+                        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, object,
+                                new Response.Listener<JSONObject>() {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        Toast.makeText(getApplicationContext(), "Building Created!", Toast.LENGTH_LONG).show();
+                                    }
+                                }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                error.printStackTrace();
+                            }
+                        });
+                        requestQueue.add(jsonObjectRequest);
 
                         //String extinguisherChild = extinguisherArea.getText().toString() + " " + extinguisherLocation.getText().toString();
 
 
-                        expandableListTitle.add(buildingName.getText().toString());
-                       List<String> buildingExtinguisher = new ArrayList<String>();
-
-                        //buildingExtinguisher.add(extinguisherChild);
-                        expandableListDetail.put(buildingName.getText().toString(), buildingExtinguisher);
+//                        expandableListTitle.add(buildingName.getText().toString() + buildingAddress.getText().toString() + buildingCity.getText().toString());
+//                       List<String> buildingExtinguisher = new ArrayList<>();
+//                       buildingExtinguisher.add("ggg");
+//
+//                        //buildingExtinguisher.add(extinguisherChild);
+//                        expandableListDetail.put(buildingName.getText().toString(), buildingExtinguisher);
 
                     }
                 });
@@ -406,6 +449,50 @@ public class BuildingActivity extends AppCompatActivity {
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.setView(dialogView);
         alertDialog.show();
+
+    }
+
+    private void getBuilding() {
+        String url = "https://alin.scweb.ca/SanalAPI/building?client_id=6";
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray jsonArray = response.getJSONArray("data");
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject building = jsonArray.getJSONObject(i);
+
+                                Long id = building.getLong("id");
+                                String building_name = building.getString("building_name");
+                                String building_email = building.getString("building_address");
+                                String building_phone = building.getString("building_city");
+                                String building_address = building.getString("building_postalcode");
+
+                                Log.d("asd", building_name);
+                                expandableListTitle.add(building_name);
+
+//                                List<String> buildingExtinguisher = new ArrayList<>();
+//                                buildingExtinguisher.add("ggg");
+//                                expandableListDetail.put(building_name, buildingExtinguisher);
+
+
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO: Handle error
+                        error.printStackTrace();
+                    }
+                });
+        requestQueue.add(jsonObjectRequest);
 
     }
 }
