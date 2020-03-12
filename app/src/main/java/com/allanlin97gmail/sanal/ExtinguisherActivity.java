@@ -1,14 +1,12 @@
 package com.allanlin97gmail.sanal;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
-import android.Manifest;
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -17,7 +15,17 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -27,16 +35,24 @@ import java.util.Locale;
 public class ExtinguisherActivity extends AppCompatActivity {
 
     final Calendar myCalendar = Calendar.getInstance();
+    EditText makeEditText, serialNumberEditText, barcodeEditText, areaEditText, locationEditText, commentEditText;
+    //dates
     EditText mDateEditText, hDateEditText, sDateEditText, nSDateEditText;
     ImageView imageView;
     Button photoButton;
     public  static final int RequestPermissionCode  = 1 ;
     Spinner type, rating, status;
+    RequestQueue requestQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_extinguisher);
+
+        //back button for extinguisher activity
+        getSupportActionBar().setHomeButtonEnabled(true);
+
+        requestQueue = Volley.newRequestQueue(this);
 
         String[] typeSpinner = new String[] {
                  "Water", "Foam", "Dry Powder", "CO2", "Wet Chemical"
@@ -68,7 +84,13 @@ public class ExtinguisherActivity extends AppCompatActivity {
         adapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         status.setAdapter(adapter3);
 
-
+        makeEditText = findViewById(R.id.extingMake);
+        serialNumberEditText = findViewById(R.id.extinguisherSerialNumber);
+        barcodeEditText = findViewById(R.id.extinguisherBarcode);
+        areaEditText = findViewById(R.id.extinguisherArea);
+        locationEditText = findViewById(R.id.extinguisherLocation);
+        commentEditText = findViewById(R.id.extinguisherComment);
+        //dates
         mDateEditText = findViewById(R.id.extinguisherMDate);
         hDateEditText = findViewById(R.id.extinguisherHDate);
         sDateEditText = findViewById(R.id.extinguisherSDate);
@@ -77,7 +99,7 @@ public class ExtinguisherActivity extends AppCompatActivity {
         imageView = findViewById(R.id.imageView1);
         photoButton = findViewById(R.id.button1);
 
-        EnableRuntimePermission();
+        //EnableRuntimePermission();
         imageView.setRotation(90);
 
         photoButton.setOnClickListener(new View.OnClickListener() {
@@ -183,33 +205,36 @@ public class ExtinguisherActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+        getExtinguisher();
+
     }
 
 
 
     private void updateLabel() {
-        String myFormat = "MM/dd/yyyy"; //In which you need put here
+        String myFormat = "yyyy-MM-dd"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         mDateEditText.setText(sdf.format(myCalendar.getTime()));
 
     }
 
     private void updateHLabel() {
-        String myFormat = "MM/dd/yyyy"; //In which you need put here
+        String myFormat = "yyyy-MM-dd"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         hDateEditText.setText(sdf.format(myCalendar.getTime()));
 
     }
 
     private void updateSLabel() {
-        String myFormat = "MM/dd/yyyy"; //In which you need put here
+        String myFormat = "yyyy-MM-dd"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         sDateEditText.setText(sdf.format(myCalendar.getTime()));
 
     }
 
     private void updateNSLabel() {
-        String myFormat = "MM/dd/yyyy"; //In which you need put here
+        String myFormat = "yyyy-MM-dd"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         nSDateEditText.setText(sdf.format(myCalendar.getTime()));
 
@@ -223,42 +248,98 @@ public class ExtinguisherActivity extends AppCompatActivity {
 
             imageView.setImageBitmap(bitmap);
         }
+
+
     }
 
-    public void EnableRuntimePermission(){
+//    public void EnableRuntimePermission(){
+//
+//        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+//                Manifest.permission.CAMERA))
+//        {
+//
+//            Toast.makeText(this,"CAMERA permission allows us to Access CAMERA app", Toast.LENGTH_LONG).show();
+//
+//        } else {
+//
+//            ActivityCompat.requestPermissions(this,new String[]{
+//                    Manifest.permission.CAMERA}, RequestPermissionCode);
+//
+//        }
+//    }
+//
+//    @Override
+//    public void onRequestPermissionsResult(int RC, String per[], int[] PResult) {
+//
+//        switch (RC) {
+//
+//            case RequestPermissionCode:
+//
+//                if (PResult.length > 0 && PResult[0] == PackageManager.PERMISSION_GRANTED) {
+//
+//                    Toast.makeText(this,"Permission Granted, Now your application can access CAMERA.", Toast.LENGTH_LONG).show();
+//
+//                } else {
+//
+//                    //Toast.makeText(this,"Permission Canceled, Now your application cannot access CAMERA.", Toast.LENGTH_LONG).show();
+//
+//                }
+//                break;
+//        }
+//    }
 
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                Manifest.permission.CAMERA))
-        {
+    private void getExtinguisher() {
+        String url = "https://alin.scweb.ca/SanalAPI/extinguisher/7";
 
-            Toast.makeText(this,"CAMERA permission allows us to Access CAMERA app", Toast.LENGTH_LONG).show();
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 
-        } else {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray jsonArray = response.getJSONArray("data");
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject extinguisher = jsonArray.getJSONObject(i);
 
-            ActivityCompat.requestPermissions(this,new String[]{
-                    Manifest.permission.CAMERA}, RequestPermissionCode);
+                                //Long id = extinguisher.getLong("id");
+                                String make = extinguisher.getString("extinguisher_make");
+                                String serialNumber = extinguisher.getString("extinguisher_serialnumber");
+                                String barcode = extinguisher.getString("extinguisher_barcodenumber");
+                                String area = extinguisher.getString("extinguisher_locationarea");
+                                String location = extinguisher.getString("extinguisher_locationdescription");
+                                String type = extinguisher.getString("extinguisher_type");
+                                String rating = extinguisher.getString("extinguisher_rating");
+                                String mDate = extinguisher.getString("extinguisher_manufacturedate");
+                                String hDate = extinguisher.getString("extinguisher_htestdate");
+                                String sDate = extinguisher.getString("extinguisher_servicedate");
+                                String nSDate = extinguisher.getString("extinguisher_nextservicedate");
+                                String status = extinguisher.getString("extinguisher_status");
+                                String comment = extinguisher.getString("extinguisher_comment");
+                                String photoUrl = extinguisher.getString("extinguisher_photourl");
 
-        }
+                                makeEditText.setText("bi");
+                                Log.d("hi", make);
+
+//                                clientList.add(new ClientItem(id, R.drawable.ic_more_vert_black_24dp, name, email, phone, address));
+//
+//                                adapter = new ClientAdapter(clientList);
+//                                recyclerView.setLayoutManager(layoutManager);
+//                                recyclerView.setAdapter(adapter);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO: Handle error
+                        error.printStackTrace();
+                    }
+                });
+        requestQueue.add(jsonObjectRequest);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int RC, String per[], int[] PResult) {
-
-        switch (RC) {
-
-            case RequestPermissionCode:
-
-                if (PResult.length > 0 && PResult[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    Toast.makeText(this,"Permission Granted, Now your application can access CAMERA.", Toast.LENGTH_LONG).show();
-
-                } else {
-
-                    Toast.makeText(this,"Permission Canceled, Now your application cannot access CAMERA.", Toast.LENGTH_LONG).show();
-
-                }
-                break;
-        }
-    }
 
 }

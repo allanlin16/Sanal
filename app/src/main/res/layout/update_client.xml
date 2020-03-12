@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:id="@+id/addClient">
+    android:id="@+id/editClient">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,8 +16,8 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Name"
-                android:id="@+id/addName">
+                android:hint="Edit Name"
+                android:id="@+id/editName">
             </EditText>
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -34,8 +34,8 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Address"
-                android:id="@+id/addAddress">
+                android:hint="Edit Address"
+                android:id="@+id/editAddress">
 
             </EditText>
 
@@ -53,8 +53,8 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Phone"
-                android:id="@+id/addPhone">
+                android:hint="Edit Phone"
+                android:id="@+id/editPhone">
 
             </EditText>
         </com.google.android.material.textfield.TextInputLayout>
@@ -72,8 +72,8 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Email"
-                android:id="@+id/addEmail">
+                android:hint="Edit Email"
+                android:id="@+id/editEmail">
 
             </EditText>
         </com.google.android.material.textfield.TextInputLayout>/

@@ -5,9 +5,12 @@ import java.util.List;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
@@ -70,13 +73,46 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getGroupView(int listPosition, boolean isExpanded,
-                             View convertView, ViewGroup parent) {
+                             View convertView, final ViewGroup parent) {
         String listTitle = (String) getGroup(listPosition);
         if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = layoutInflater.inflate(R.layout.list_group, null);
         }
         TextView listTitleTextView = (TextView) convertView.findViewById(R.id.listTitle);
+        ImageView buildingEdit = convertView.findViewById(R.id.buildingMenuButton);
+        buildingEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PopupMenu popup = new PopupMenu(parent.getContext(), view);
+
+                /** Adding menu items to the popumenu */
+                popup.getMenuInflater().inflate(R.menu.edit_delete_menu, popup.getMenu());
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        // TODO Auto-generated method stub
+                        switch (item.getItemId()) {
+                            case R.id.edit:
+
+
+                                break;
+
+                            case R.id.delete:
+
+                                break;
+
+                            default:
+                                break;
+                        }
+
+                        return false;
+                    }
+                });
+                popup.show();
+            }
+        });
         listTitleTextView.setTypeface(null, Typeface.BOLD);
         listTitleTextView.setText(listTitle);
         return convertView;

@@ -8,27 +8,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <EditText
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Building Name"
-            android:id="@+id/addBuildingName">
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
-        </EditText>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Building Name"
+                android:id="@+id/addBuildingName"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Building Address"
-            android:id="@+id/addBuildingAddress">
-
-        </EditText>
 
 
     </LinearLayout>
@@ -37,13 +28,37 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <EditText
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Building City"
-            android:id="@+id/addBuildingCity">
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Building Address"
+                android:id="@+id/addBuildingAddress">
 
-        </EditText>
+            </EditText>
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Building City"
+                android:id="@+id/addBuildingCity">
+
+            </EditText>
+        </com.google.android.material.textfield.TextInputLayout>
 
 
     </LinearLayout>
@@ -52,56 +67,60 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <EditText
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Building Postal Code"
-            android:id="@+id/addBuildingPostalCode">
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Building Postal Code"
+                android:id="@+id/addBuildingPostalCode">
 
-        </EditText>
-
+            </EditText>
+        </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="horizontal">-->
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Add Extinguisher child"
-            android:gravity="center"/>
+<!--        <TextView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Add Extinguisher child"-->
+<!--            android:gravity="center"/>-->
 
-    </LinearLayout>
+<!--    </LinearLayout>-->
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content">-->
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Extinguisher Area"
-            android:id="@+id/addExtinguisherArea">
+<!--        <EditText-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:hint="Extinguisher Area"-->
+<!--            android:id="@+id/addExtinguisherArea">-->
 
-        </EditText>
+<!--        </EditText>-->
 
 
-    </LinearLayout>
+<!--    </LinearLayout>-->
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content">-->
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Extinguisher Location"
-            android:id="@+id/addExtinguisherLocation">
-        </EditText>
+<!--        <EditText-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:hint="Extinguisher Location"-->
+<!--            android:id="@+id/addExtinguisherLocation">-->
+<!--        </EditText>-->
 
-    </LinearLayout>
+<!--    </LinearLayout>-->
 
 </LinearLayout>

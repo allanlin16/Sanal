@@ -29,12 +29,17 @@
     <string name="extinguisherType">Type</string>
     <string name="extinguisherRating">Rating</string>
     <string name="extinguisherSize">Size</string>
-    <string name="extinguisherMDate">MDate</string>
-    <string name="extinguisherHDate">HDate</string>
-    <string name="extinguisherSDate">SDate</string>
-    <string name="extinguisherNSDate">NSDate</string>
+    <string name="extinguisherMDate">Manufacture Date</string>
+    <string name="extinguisherHDate">H-Test Date</string>
+    <string name="extinguisherSDate">Serviced Date</string>
+    <string name="extinguisherNSDate">Next Service Date</string>
     <string name="extinguisherComment">Comment</string>
     <string name="extinguisherStatus">Status</string>
+
+    <!-- FloatingActionButton Menu -->
+    <string name="AddBuilding">Add Building</string>
+    <string name="AddExtinguisher">Add Extinguisher</string>
+    <string name="GeneratePDF">Generate PDF</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
