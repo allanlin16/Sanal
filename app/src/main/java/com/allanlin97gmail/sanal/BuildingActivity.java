@@ -96,7 +96,6 @@ public class BuildingActivity extends AppCompatActivity {
 
         getBuilding();
 
-
         expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
@@ -377,9 +376,46 @@ public class BuildingActivity extends AppCompatActivity {
 
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
-                        System.out.println("hi");
-
+                        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+                        JSONObject object = new JSONObject();
+                        try {
+                            //input your API parameters
+                            object.put("extinguisher_make", makeEditText.getText().toString());
+                            object.put("extinguisher_serialnumber",serialNumberEditText.getText().toString());
+                            object.put("extinguisher_barcodenumber",barcodeEditText.getText().toString());
+                            object.put("extinguisher_locationarea",areaEditText.getText().toString());
+                            object.put("extinguisher_locationdescription",locationEditText.getText().toString());
+                            object.put("extinguisher_type",typeSpinner.getSelectedItem().toString());
+                            object.put("extinguisher_rating",ratingSpinner.getSelectedItem().toString());
+                            object.put("extinguisher_manufacturedate",mDateEditText.getText().toString());
+                            object.put("extinguisher_htestdate",hDateEditText.getText().toString());
+                            object.put("extinguisher_servicedate",sDateEditText.getText().toString());
+                            object.put("extinguisher_nextservicedate",nSDateEditText.getText().toString());
+                            object.put("extinguisher_status",statusSpinner.getSelectedItem().toString());
+                            object.put("extinguisher_comment",commentEditText.getText().toString());
+                            object.put("extinguisher_photourl","photo");
+                            object.put("building_id",6);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        // Enter the correct url for your api service site
+                        String url = "https://alin.scweb.ca/SanalAPI/extinguisher?building_id=6";
+                        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, object,
+                                new Response.Listener<JSONObject>() {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        Toast.makeText(getApplicationContext(), "Extinguisher Created!", Toast.LENGTH_LONG).show();
+                                    }
+                                }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                error.printStackTrace();
+                            }
+                        });
+                        requestQueue.add(jsonObjectRequest);
                     }
+
+
                 });
 
         alertDialogBuilder.setNegativeButton("Cancel",

@@ -29,7 +29,7 @@
             android:padding="10dp"
             android:scrollbars="vertical" />
     </LinearLayout>
-    
+
 
     <com.github.clans.fab.FloatingActionButton
         android:id="@+id/addClientFab"

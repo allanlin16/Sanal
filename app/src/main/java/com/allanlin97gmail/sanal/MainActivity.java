@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.clientRecyclerView);
         jsonParse();
 
+
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         adapter = new ClientAdapter(clientList);
