@@ -55,7 +55,7 @@ public class BuildingFragment extends Fragment {
 
     private BuildingViewModel buildingViewModel;
     ExpandableListView expandableListView;
-    ExpandableListAdapter expandableListAdapter;
+    CustomExpandableListAdapter expandableListAdapter;
     List<String> expandableListTitle;
     HashMap<String, List<String>> expandableListDetail;
     FloatingActionButton addBuildingFab, addExtinguisherFab, generatePDFFab;
@@ -106,7 +106,7 @@ public class BuildingFragment extends Fragment {
         //set the expanablelistview
         expandableListView = root.findViewById(R.id.expandableListView);
         expandableListDetail = ExpandableListViewData.getData();
-        expandableListTitle = new ArrayList<String>(expandableListDetail.keySet());
+        expandableListTitle = new ArrayList(expandableListDetail.keySet());
         expandableListAdapter = new CustomExpandableListAdapter(getContext(), expandableListTitle, expandableListDetail);
         expandableListView.setAdapter(expandableListAdapter);
 
@@ -125,6 +125,8 @@ public class BuildingFragment extends Fragment {
                 return false;
             }
         });
+
+        expandableListAdapter.notifyDataSetChanged();
 
         return root;
     }
@@ -172,6 +174,19 @@ public class BuildingFragment extends Fragment {
                                     @Override
                                     public void onResponse(JSONObject response) {
                                         Toast.makeText(getContext(), "Building Created!", Toast.LENGTH_LONG).show();
+                                        expandableListTitle.add(buildingName.getText().toString() + " " +
+                                                buildingAddress.getText().toString() + " " +
+                                                buildingCity.getText().toString() + " " +
+                                                buildingPostalCode.getText().toString());
+
+                                        String buildingString = buildingName.getText().toString() + " " + buildingAddress.getText().toString() + " " +
+                                                buildingCity.getText().toString() + " " + buildingPostalCode.getText().toString();
+
+                                        List<String> buildingExtinguisher = new ArrayList<>();
+                                        buildingExtinguisher.add("fff");
+                                        expandableListDetail.put(buildingString, buildingExtinguisher);
+
+                                        expandableListAdapter.notifyDataSetChanged();
                                     }
                                 }, new Response.ErrorListener() {
                             @Override
@@ -184,7 +199,7 @@ public class BuildingFragment extends Fragment {
                         //String extinguisherChild = extinguisherArea.getText().toString() + " " + extinguisherLocation.getText().toString();
 
 
-//                        expandableListTitle.add(buildingName.getText().toString() + buildingAddress.getText().toString() + buildingCity.getText().toString());
+                        //expandableListTitle.add(buildingName.getText().toString() + buildingAddress.getText().toString() + buildingCity.getText().toString());
 //                       List<String> buildingExtinguisher = new ArrayList<>();
 //                       buildingExtinguisher.add("ggg");
 //
@@ -522,19 +537,19 @@ public class BuildingFragment extends Fragment {
 
                                 Long id = building.getLong("id");
                                 String building_name = building.getString("building_name");
-                                String building_email = building.getString("building_address");
+                                String building_address = building.getString("building_address");
                                 String building_phone = building.getString("building_city");
-                                String building_address = building.getString("building_postalcode");
-
-                                Log.d("asd", building_name);
-                                expandableListTitle.add(building_name);
-
-//                                List<String> buildingExtinguisher = new ArrayList<>();
-//                                buildingExtinguisher.add("ggg");
-//                                expandableListDetail.put(building_name, buildingExtinguisher);
+                                String building_postalcode = building.getString("building_postalcode");
 
 
+                                String buildingString = building_name+ " " +building_address + " " +
+                                        building_phone+ " " + building_postalcode;
+                                List<String> buildingExtinguisher = new ArrayList<>();
+                                buildingExtinguisher.add("fff");
+                                expandableListTitle.add(buildingString);
+                                expandableListDetail.put(buildingString, buildingExtinguisher);
                             }
+                            expandableListAdapter.notifyDataSetChanged();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
