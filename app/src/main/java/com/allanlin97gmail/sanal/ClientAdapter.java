@@ -96,7 +96,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
                                                         e.printStackTrace();
                                                     }
                                                     // Enter the correct url for your api service site
-                                                    String url = "https://alin.scweb.ca/SanalAPI/client/16";
+                                                    String url = "https://alin.scweb.ca/SanalAPI/api/client/16";
                                                     JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, object,
                                                             new Response.Listener<JSONObject>() {
                                                                 @Override
@@ -145,7 +145,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
                                     JSONObject object = new JSONObject();
                                     removeAt(getAdapterPosition());
                                     // Enter the correct url for your api service site
-                                    String url = "https://alin.scweb.ca/SanalAPI/client/1";
+                                    String url = "https://alin.scweb.ca/SanalAPI/api/client/1";
                                     JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, url, object,
                                             new Response.Listener<JSONObject>() {
                                                 @Override

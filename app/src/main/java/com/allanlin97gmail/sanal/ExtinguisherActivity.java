@@ -289,7 +289,7 @@ public class ExtinguisherActivity extends AppCompatActivity {
 //    }
 
     private void getExtinguisher() {
-        String url = "https://alin.scweb.ca/SanalAPI/extinguisher/7";
+        String url = "https://alin.scweb.ca/SanalAPI/api/extinguisher/7";
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
