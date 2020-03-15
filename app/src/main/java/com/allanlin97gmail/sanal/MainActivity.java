@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void jsonParse() {
-        String url = "https://alin.scweb.ca/SanalAPI/client?user_id=6";
+        String url = "https://alin.scweb.ca/SanalAPI/api/client?user_id=6";
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -167,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         // Enter the correct url for your api service site
-                        String url = "https://alin.scweb.ca/SanalAPI/client?user_id=6";
+                        String url = "https://alin.scweb.ca/SanalAPI/api/client?user_id=6";
                         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, object,
                                 new Response.Listener<JSONObject>() {
                                     @Override

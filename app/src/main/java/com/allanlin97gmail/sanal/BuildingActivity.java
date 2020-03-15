@@ -147,7 +147,7 @@ public class BuildingActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         // Enter the correct url for your api service site
-                        String url = "https://alin.scweb.ca/SanalAPI/building?client_id=6";
+                        String url = "https://alin.scweb.ca/SanalAPI/api/building?client_id=6";
                         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, object,
                                 new Response.Listener<JSONObject>() {
                                     @Override
@@ -399,7 +399,7 @@ public class BuildingActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         // Enter the correct url for your api service site
-                        String url = "https://alin.scweb.ca/SanalAPI/extinguisher?building_id=6";
+                        String url = "https://alin.scweb.ca/SanalAPI/api/extinguisher?building_id=6";
                         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, object,
                                 new Response.Listener<JSONObject>() {
                                     @Override
@@ -489,7 +489,7 @@ public class BuildingActivity extends AppCompatActivity {
     }
 
     private void getBuilding() {
-        String url = "https://alin.scweb.ca/SanalAPI/building?client_id=6";
+        String url = "https://alin.scweb.ca/SanalAPI/api/building?client_id=6";
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {

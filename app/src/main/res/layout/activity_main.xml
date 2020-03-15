@@ -41,8 +41,7 @@
         android:layout_marginBottom="8dp"
         android:src="@drawable/ic_add_black_24dp"
         app:fab_colorNormal="@color/colorAccent"
-        app:fab_colorPressed="@color/colorAccent"
-        />
+        app:fab_colorPressed="@color/colorAccent" />
 
 
 </RelativeLayout>
