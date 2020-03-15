@@ -1,6 +1,8 @@
 package com.allanlin97;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,9 +10,21 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.List;
@@ -101,10 +115,94 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
                         switch (item.getItemId()) {
                             case R.id.edit:
 
+                                final View dialogView = View.inflate(parent.getContext(),R.layout.update_building,null);
+                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(parent.getContext());
+                                alertDialogBuilder.setMessage("Update Building");
+
+                                // set up the edit text
+                                final EditText buildingName =  dialogView.findViewById(R.id.editBuildingName);
+                                final EditText buildingAddress = dialogView.findViewById(R.id.editBuildingAddress);
+                                final EditText buildingCity =  dialogView.findViewById(R.id.editBuildingCity);
+                                final EditText buildingPostalCode =  dialogView.findViewById(R.id.editBuildingPostalCode);
+
+
+                                alertDialogBuilder.setPositiveButton("Update",
+                                        new DialogInterface.OnClickListener() {
+
+                                            @Override
+                                            public void onClick(DialogInterface arg0, int arg1) {
+
+                                                RequestQueue requestQueue = Volley.newRequestQueue(parent.getContext());
+                                                JSONObject object = new JSONObject();
+                                                try {
+                                                    //input your API parameters
+                                                    object.put("building_name", buildingName.getText().toString());
+                                                    object.put("building_address", buildingAddress.getText().toString());
+                                                    object.put("building_city", buildingCity.getText().toString());
+                                                    object.put("building_postalcode", buildingPostalCode.getText().toString());
+                                                    object.put("user_id",6);
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+                                                // Enter the correct url for your api service site
+                                                String url = "https://alin.scweb.ca/SanalAPI/api/building/1";
+                                                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, object,
+                                                        new Response.Listener<JSONObject>() {
+                                                            @Override
+                                                            public void onResponse(JSONObject response) {
+                                                                Toast.makeText(parent.getContext(), "Client Updated!", Toast.LENGTH_LONG).show();
+//                                                                //TODO: update the expanablelistview
+                                                            }
+                                                        }, new Response.ErrorListener() {
+                                                    @Override
+                                                    public void onErrorResponse(VolleyError error) {
+                                                        error.printStackTrace();
+                                                    }
+                                                });
+                                                requestQueue.add(jsonObjectRequest);
+
+
+
+                                            }
+                                        });
+
+                                alertDialogBuilder.setNegativeButton("Cancel",
+                                        new DialogInterface.OnClickListener() {
+
+                                            @Override
+                                            public void onClick(DialogInterface arg0, int arg1) {
+
+                                            }
+                                        });
+
+
+                                AlertDialog alertDialog = alertDialogBuilder.create();
+                                alertDialog.setView(dialogView);
+                                alertDialog.show();
+
 
                                 break;
 
                             case R.id.delete:
+                                RequestQueue requestQueue = Volley.newRequestQueue(parent.getContext());
+                                JSONObject object = new JSONObject();
+                                // TODO: remove from adapter
+                                //expandableListTitle.removeAll();
+                                // Enter the correct url for your api service site
+                                String url = "https://alin.scweb.ca/SanalAPI/api/building/20";
+                                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, url, object,
+                                        new Response.Listener<JSONObject>() {
+                                            @Override
+                                            public void onResponse(JSONObject response) {
+
+                                            }
+                                        }, new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        error.printStackTrace();
+                                    }
+                                });
+                                requestQueue.add(jsonObjectRequest);
 
                                 break;
 
