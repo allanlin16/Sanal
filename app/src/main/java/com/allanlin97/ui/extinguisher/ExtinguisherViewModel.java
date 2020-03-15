@@ -10,7 +10,7 @@ public class ExtinguisherViewModel extends ViewModel {
 
     public ExtinguisherViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is slideshow fragment");
+        mText.setValue("Extinguisher");
     }
 
     public LiveData<String> getText() {
