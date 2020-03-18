@@ -228,11 +228,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1">
+
             <EditText
+                android:id="@+id/extinguisherComment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/extinguisherComment"
-                android:hint="Comments"/>
+                android:hint="Comments"
+                android:minLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
@@ -243,7 +245,7 @@
         android:orientation="vertical">
 
         <Button
-            android:id="@+id/button1"
+            android:id="@+id/updatePhotoButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Update Photo"
@@ -262,6 +264,7 @@
     </LinearLayout>
 
     <Button
+        android:id="@+id/updateExtinguisherButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Update Info">

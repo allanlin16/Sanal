@@ -2,6 +2,7 @@ package com.allanlin97;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -174,6 +175,11 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
                 public void onClick(View v) {
                     AppCompatActivity activity = (AppCompatActivity) v.getContext();
                     BuildingFragment myFragment = new BuildingFragment();
+
+                    Bundle args = new Bundle();
+                    args.putString("client", cardViewname.getText().toString());
+                    myFragment.setArguments(args);
+
                     activity.getSupportFragmentManager().beginTransaction()
                             .replace(R.id.nav_host_fragment, myFragment)
                             .addToBackStack(null)

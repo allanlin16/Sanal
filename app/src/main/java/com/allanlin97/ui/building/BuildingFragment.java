@@ -66,6 +66,8 @@ public class BuildingFragment extends Fragment {
         buildingViewModel = ViewModelProviders.of(this).get(BuildingViewModel.class);
         View root = inflater.inflate(R.layout.fragment_building, container, false);
 
+        String name = getArguments().getString("clients", "");
+
         final TextView textView = root.findViewById(R.id.recent_title_label);
         buildingViewModel.getText().observe(this, new Observer<String>() {
             @Override

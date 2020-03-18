@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
@@ -49,7 +50,7 @@ public class ExtinguisherFragment extends Fragment {
     //dates
     EditText mDateEditText, hDateEditText, sDateEditText, nSDateEditText;
     ImageView imageView;
-    Button photoButton;
+    Button photoButton, updateButton;
     public  static final int RequestPermissionCode  = 1 ;
     Spinner type, rating, status;
     RequestQueue requestQueue;
@@ -67,7 +68,7 @@ public class ExtinguisherFragment extends Fragment {
 
         requestQueue = Volley.newRequestQueue(getContext());
 
-        String[] typeSpinner = new String[] {
+        final String[] typeSpinner = new String[] {
                 "Water", "Foam", "Dry Powder", "CO2", "Wet Chemical"
         };
 
@@ -110,7 +111,8 @@ public class ExtinguisherFragment extends Fragment {
         nSDateEditText = root.findViewById(R.id.extinguisherNSDate);
 
         imageView = root.findViewById(R.id.imageView1);
-        photoButton = root.findViewById(R.id.button1);
+        photoButton = root.findViewById(R.id.updatePhotoButton);
+        updateButton = root.findViewById(R.id.updateExtinguisherButton);
 
         //EnableRuntimePermission();
         imageView.setRotation(90);
@@ -125,6 +127,53 @@ public class ExtinguisherFragment extends Fragment {
 
             }
         });
+
+        updateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+                JSONObject object = new JSONObject();
+                try {
+                    //input your API parameters
+                    object.put("extinguisher_make", makeEditText.getText().toString());
+                    object.put("extinguisher_serialnumber", serialNumberEditText.getText().toString());
+                    object.put("extinguisher_barcodenumber", barcodeEditText.getText().toString());
+                    object.put("extinguisher_locationarea", areaEditText.getText().toString());
+                    object.put("extinguisher_locationdescription", locationEditText.getText().toString());
+                    object.put("extinguisher_type", type.getSelectedItem().toString());
+                    object.put("extinguisher_rating", rating.getSelectedItem().toString());
+                    object.put("extinguisher_manufacturedate", mDateEditText.getText().toString());
+                    object.put("extinguisher_htestdate", hDateEditText.getText().toString());
+                    object.put("extinguisher_servicedate", sDateEditText.getText().toString());
+                    object.put("extinguisher_nextservicedate", nSDateEditText.getText().toString());
+                    object.put("extinguisher_comment", commentEditText.getText().toString());
+                    object.put("extinguisher_status", status.getSelectedItem().toString());
+                    object.put("extinguisher_photourl", "");
+                    object.put("building_id",6);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                // Enter the correct url for your api service site
+                String url = "https://alin.scweb.ca/SanalAPI/api/extinguisher/1";
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, object,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                Toast.makeText(getContext(), "Extinguisher Updated!", Toast.LENGTH_LONG).show();
+                                //TODO: update the layout
+
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                    }
+                });
+                requestQueue.add(jsonObjectRequest);
+            }
+        });
+
+
 
 
         final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener(){
