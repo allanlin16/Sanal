@@ -61,6 +61,8 @@ public class BuildingFragment extends Fragment {
     FloatingActionButton addBuildingFab, addExtinguisherFab, generatePDFFab;
     ImageView extinguisherImageView;
     RequestQueue requestQueue;
+    Bundle bundle;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         buildingViewModel = ViewModelProviders.of(this).get(BuildingViewModel.class);
@@ -111,9 +113,7 @@ public class BuildingFragment extends Fragment {
         expandableListAdapter = new CustomExpandableListAdapter(getContext(), expandableListTitle, expandableListDetail);
         expandableListView.setAdapter(expandableListAdapter);
 
-        getBuilding();
-
-        Bundle bundle = this.getArguments();
+        bundle = this.getArguments();
         if (bundle != null) {
             final long clientId = bundle.getLong("clientId");
             final String nameString = bundle.getString("clientName");
@@ -122,13 +122,53 @@ public class BuildingFragment extends Fragment {
                 @Override
                 public void onChanged(@Nullable String s) {
                     textView.setText(nameString + "'s Buildings");
-                    System.out.println(clientId);
                 }
             });
 
+            String url = "https://alin.scweb.ca/SanalAPI/api/building?client_id="+clientId;
 
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                    (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            try {
+                                JSONArray jsonArray = response.getJSONArray("data");
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject building = jsonArray.getJSONObject(i);
+
+                                    Long id = building.getLong("id");
+                                    String building_name = building.getString("building_name");
+                                    String building_address = building.getString("building_address");
+                                    String building_phone = building.getString("building_city");
+                                    String building_postalcode = building.getString("building_postalcode");
+
+
+                                    String buildingString = building_name+ " " +building_address + " " +
+                                            building_phone+ " " + building_postalcode;
+                                    List<String> buildingExtinguisher = new ArrayList<>();
+                                    buildingExtinguisher.add("fff");
+                                    expandableListTitle.add(buildingString);
+                                    expandableListDetail.put(buildingString, buildingExtinguisher);
+                                }
+                                expandableListAdapter.notifyDataSetChanged();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            // TODO: Handle error
+                            error.printStackTrace();
+                        }
+                    });
+            requestQueue.add(jsonObjectRequest);
 
         }
+
+
 
         expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
@@ -156,8 +196,6 @@ public class BuildingFragment extends Fragment {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
         alertDialogBuilder.setMessage("Add Building");
 
-
-
         // set up the edit text
         final EditText buildingName = dialogView.findViewById(R.id.addBuildingName);
         final EditText buildingAddress = dialogView.findViewById(R.id.addBuildingAddress);
@@ -177,16 +215,18 @@ public class BuildingFragment extends Fragment {
                         JSONObject object = new JSONObject();
                         try {
                             //input your API parameters
+                            final long clientId = bundle.getLong("clientId");
                             object.put("building_name", buildingName.getText().toString());
                             object.put("building_address", buildingAddress.getText().toString());
                             object.put("building_city", buildingCity.getText().toString());
                             object.put("building_postalcode", buildingPostalCode.getText().toString());
-                            object.put("client_id",6);
+                            object.put("client_id", clientId);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                         // Enter the correct url for your api service site
-                        String url = "https://alin.scweb.ca/SanalAPI/api/building?client_id=6";
+                        final long clientId = bundle.getLong("clientId");
+                        String url = "https://alin.scweb.ca/SanalAPI/api/building?client_id="+clientId;
                         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, object,
                                 new Response.Listener<JSONObject>() {
                                     @Override
@@ -537,50 +577,6 @@ public class BuildingFragment extends Fragment {
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.setView(dialogView);
         alertDialog.show();
-
-    }
-
-    private void getBuilding() {
-        String url = "https://alin.scweb.ca/SanalAPI/api/building?client_id=6";
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray jsonArray = response.getJSONArray("data");
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                JSONObject building = jsonArray.getJSONObject(i);
-
-                                Long id = building.getLong("id");
-                                String building_name = building.getString("building_name");
-                                String building_address = building.getString("building_address");
-                                String building_phone = building.getString("building_city");
-                                String building_postalcode = building.getString("building_postalcode");
-
-
-                                String buildingString = building_name+ " " +building_address + " " +
-                                        building_phone+ " " + building_postalcode;
-                                List<String> buildingExtinguisher = new ArrayList<>();
-                                buildingExtinguisher.add("fff");
-                                expandableListTitle.add(buildingString);
-                                expandableListDetail.put(buildingString, buildingExtinguisher);
-                            }
-                            expandableListAdapter.notifyDataSetChanged();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // TODO: Handle error
-                        error.printStackTrace();
-                    }
-                });
-        requestQueue.add(jsonObjectRequest);
 
     }
 }

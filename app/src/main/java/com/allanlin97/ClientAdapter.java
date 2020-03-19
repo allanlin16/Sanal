@@ -14,6 +14,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.LongDef;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
@@ -51,7 +52,6 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
             cardViewEmail = itemView.findViewById(R.id.clientEmail);
             cardViewPhone = itemView.findViewById(R.id.clientPhoneNumber);
             cardViewAddress = itemView.findViewById(R.id.clientAddress);
-
 
             requestQueue = Volley.newRequestQueue(itemView.getContext());
             cardVieweditDeleteButton =  itemView.findViewById(R.id.menuButton);
@@ -100,7 +100,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
                                                         e.printStackTrace();
                                                     }
                                                     // Enter the correct url for your api service site
-                                                    String url = "https://alin.scweb.ca/SanalAPI/api/client/16";
+                                                    String url = "https://alin.scweb.ca/SanalAPI/api/client/"+clientList.get(getAdapterPosition()).getId();
                                                     JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, object,
                                                             new Response.Listener<JSONObject>() {
                                                                 @Override
@@ -118,9 +118,6 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
                                                         }
                                                     });
                                                     requestQueue.add(jsonObjectRequest);
-
-
-
                                                 }
                                             });
 
@@ -142,10 +139,11 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
                                     break;
 
                                 case R.id.delete:
+                                    Long client_id = clientList.get(getAdapterPosition()).getId();
                                     RequestQueue requestQueue = Volley.newRequestQueue(itemView.getContext());
                                     JSONObject object = new JSONObject();
                                     removeAt(getAdapterPosition());
-                                    String url = "https://alin.scweb.ca/SanalAPI/api/client/1";
+                                    String url = "https://alin.scweb.ca/SanalAPI/api/client/"+client_id;
                                     JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, url, object,
                                             new Response.Listener<JSONObject>() {
                                                 @Override
@@ -177,50 +175,17 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
                 public void onClick(View v) {
                     final AppCompatActivity activity = (AppCompatActivity) v.getContext();
                     final BuildingFragment myFragment = new BuildingFragment();
-
                     final Bundle bundle = new Bundle();
-
-                    String url = "https://alin.scweb.ca/SanalAPI/api/client?user_id=6";
-
-                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                            (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-
-                                @Override
-                                public void onResponse(JSONObject response) {
-                                    try {
-                                        clientList = new ArrayList<>();
-                                        JSONArray jsonArray = response.getJSONArray("data");
-                                        for (int i = 0; i < jsonArray.length(); i++) {
-                                            JSONObject client = jsonArray.getJSONObject(i);
-
-                                            Long clientId = client.getLong("id");
-
-                                            System.out.println(clientId);
+                    bundle.putString("clientName", clientList.get(getAdapterPosition()).getClientName());
+                    bundle.putLong("clientId", clientList.get(getAdapterPosition()).getId());
 
 
-                                            bundle.putLong("clientAdapterId", clientId);
-                                            //bundle.putString("clientName", clientList.get(getAdapterPosition()).getClientName());
+                    myFragment.setArguments(bundle);
 
-                                            myFragment.setArguments(bundle);
-
-                                            activity.getSupportFragmentManager().beginTransaction()
-                                                    .replace(R.id.nav_host_fragment, myFragment)
-                                                    .addToBackStack(null)
-                                                    .commit();
-                                        }
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }, new Response.ErrorListener() {
-
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
-                                    // TODO: Handle error
-                                    error.printStackTrace();
-                                }
-                            });
-                    requestQueue.add(jsonObjectRequest);
+                    activity.getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.nav_host_fragment, myFragment)
+                            .addToBackStack(null)
+                            .commit();
 
                 }
             });

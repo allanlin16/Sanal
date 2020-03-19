@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -65,6 +66,9 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
         TextView expandedListTextView = convertView.findViewById(R.id.expandedListItem);
         expandedListTextView.setText(expandedListText);
 
+
+
+
         return convertView;
     }
 
@@ -98,7 +102,7 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
             LayoutInflater layoutInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = layoutInflater.inflate(R.layout.list_group, null);
         }
-        TextView listTitleTextView = (TextView) convertView.findViewById(R.id.listTitle);
+        TextView listTitleTextView = convertView.findViewById(R.id.listTitle);
         ImageView buildingEdit = convertView.findViewById(R.id.buildingMenuButton);
         buildingEdit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -151,7 +155,7 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
                                                             @Override
                                                             public void onResponse(JSONObject response) {
                                                                 Toast.makeText(parent.getContext(), "Client Updated!", Toast.LENGTH_LONG).show();
-//                                                                //TODO: update the expanablelistview
+                                                                //TODO: update the expanablelistview
                                                             }
                                                         }, new Response.ErrorListener() {
                                                     @Override
@@ -160,8 +164,6 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
                                                     }
                                                 });
                                                 requestQueue.add(jsonObjectRequest);
-
-
 
                                             }
                                         });

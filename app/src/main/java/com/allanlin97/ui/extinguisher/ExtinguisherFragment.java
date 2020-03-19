@@ -377,14 +377,8 @@ public class ExtinguisherFragment extends Fragment {
                                 String comment = extinguisher.getString("extinguisher_comment");
                                 String photoUrl = extinguisher.getString("extinguisher_photourl");
 
-                                makeEditText.setText("bi");
+                                makeEditText.setText(make);
                                 Log.d("hi", make);
-
-//                                clientList.add(new ClientItem(id, R.drawable.ic_more_vert_black_24dp, name, email, phone, address));
-//
-//                                adapter = new ClientAdapter(clientList);
-//                                recyclerView.setLayoutManager(layoutManager);
-//                                recyclerView.setAdapter(adapter);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
