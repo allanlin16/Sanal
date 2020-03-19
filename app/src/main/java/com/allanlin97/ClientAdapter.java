@@ -26,6 +26,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -42,6 +43,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
         TextView cardViewPhone;
         TextView cardViewAddress;
         ImageView cardVieweditDeleteButton;
+        RequestQueue requestQueue;
 
         public ClientViewHolder(final View itemView) {
             super(itemView);
@@ -51,6 +53,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
             cardViewAddress = itemView.findViewById(R.id.clientAddress);
 
 
+            requestQueue = Volley.newRequestQueue(itemView.getContext());
             cardVieweditDeleteButton =  itemView.findViewById(R.id.menuButton);
             cardVieweditDeleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -142,7 +145,6 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
                                     RequestQueue requestQueue = Volley.newRequestQueue(itemView.getContext());
                                     JSONObject object = new JSONObject();
                                     removeAt(getAdapterPosition());
-                                    // Enter the correct url for your api service site
                                     String url = "https://alin.scweb.ca/SanalAPI/api/client/1";
                                     JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, url, object,
                                             new Response.Listener<JSONObject>() {
@@ -173,17 +175,53 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    AppCompatActivity activity = (AppCompatActivity) v.getContext();
-                    BuildingFragment myFragment = new BuildingFragment();
+                    final AppCompatActivity activity = (AppCompatActivity) v.getContext();
+                    final BuildingFragment myFragment = new BuildingFragment();
 
-                    Bundle args = new Bundle();
-                    args.putString("client", cardViewname.getText().toString());
-                    myFragment.setArguments(args);
+                    final Bundle bundle = new Bundle();
 
-                    activity.getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.nav_host_fragment, myFragment)
-                            .addToBackStack(null)
-                            .commit();
+                    String url = "https://alin.scweb.ca/SanalAPI/api/client?user_id=6";
+
+                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                            (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+
+                                @Override
+                                public void onResponse(JSONObject response) {
+                                    try {
+                                        clientList = new ArrayList<>();
+                                        JSONArray jsonArray = response.getJSONArray("data");
+                                        for (int i = 0; i < jsonArray.length(); i++) {
+                                            JSONObject client = jsonArray.getJSONObject(i);
+
+                                            Long clientId = client.getLong("id");
+
+                                            System.out.println(clientId);
+
+
+                                            bundle.putLong("clientAdapterId", clientId);
+                                            //bundle.putString("clientName", clientList.get(getAdapterPosition()).getClientName());
+
+                                            myFragment.setArguments(bundle);
+
+                                            activity.getSupportFragmentManager().beginTransaction()
+                                                    .replace(R.id.nav_host_fragment, myFragment)
+                                                    .addToBackStack(null)
+                                                    .commit();
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }, new Response.ErrorListener() {
+
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    // TODO: Handle error
+                                    error.printStackTrace();
+                                }
+                            });
+                    requestQueue.add(jsonObjectRequest);
+
                 }
             });
 

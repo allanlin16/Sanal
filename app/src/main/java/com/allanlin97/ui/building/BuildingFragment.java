@@ -66,7 +66,6 @@ public class BuildingFragment extends Fragment {
         buildingViewModel = ViewModelProviders.of(this).get(BuildingViewModel.class);
         View root = inflater.inflate(R.layout.fragment_building, container, false);
 
-        String name = getArguments().getString("clients", "");
 
         final TextView textView = root.findViewById(R.id.recent_title_label);
         buildingViewModel.getText().observe(this, new Observer<String>() {
@@ -113,6 +112,23 @@ public class BuildingFragment extends Fragment {
         expandableListView.setAdapter(expandableListAdapter);
 
         getBuilding();
+
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            final long clientId = bundle.getLong("clientId");
+            final String nameString = bundle.getString("clientName");
+
+            buildingViewModel.getText().observe(this, new Observer<String>() {
+                @Override
+                public void onChanged(@Nullable String s) {
+                    textView.setText(nameString + "'s Buildings");
+                    System.out.println(clientId);
+                }
+            });
+
+
+
+        }
 
         expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
