@@ -5,7 +5,6 @@ import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,7 +13,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -28,6 +26,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.allanlin97.BuildingItem;
 import com.allanlin97.CustomExpandableListAdapter;
 import com.allanlin97.ExpandableListViewData;
 import com.allanlin97.R;
@@ -56,18 +55,27 @@ public class BuildingFragment extends Fragment {
     private BuildingViewModel buildingViewModel;
     ExpandableListView expandableListView;
     CustomExpandableListAdapter expandableListAdapter;
-    List<String> expandableListTitle;
-    HashMap<String, List<String>> expandableListDetail;
+
+    List<BuildingItem> buildingDetails;
+    HashMap<Long, List<String>> buildingIdExtinguisher;
+
     FloatingActionButton addBuildingFab, addExtinguisherFab, generatePDFFab;
     ImageView extinguisherImageView;
     RequestQueue requestQueue;
     Bundle bundle;
+    //BuildingItem buildingItem;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         buildingViewModel = ViewModelProviders.of(this).get(BuildingViewModel.class);
         View root = inflater.inflate(R.layout.fragment_building, container, false);
 
+//        Bundle arguments = getArguments();
+//
+//        Long addedGrocery = arguments.getLong("buildingId", 8);
+//        expandableListAdapter = new CustomExpandableListAdapter(getActivity(), null,
+//                0, addedGrocery, addedGroceryGrams ) ;
+//        expandableListView.setAdapter(expandableListAdapter);
 
         final TextView textView = root.findViewById(R.id.recent_title_label);
         buildingViewModel.getText().observe(this, new Observer<String>() {
@@ -108,9 +116,15 @@ public class BuildingFragment extends Fragment {
 
         //set the expanablelistview
         expandableListView = root.findViewById(R.id.expandableListView);
-        expandableListDetail = ExpandableListViewData.getData();
-        expandableListTitle = new ArrayList(expandableListDetail.keySet());
-        expandableListAdapter = new CustomExpandableListAdapter(getContext(), expandableListTitle, expandableListDetail);
+        //expandableListDetail = ExpandableListViewData.getData();
+
+        List<BuildingItem> buildingItems = new ArrayList<>();
+
+
+        buildingDetails = new ArrayList(buildingItems);
+        buildingIdExtinguisher = new HashMap<Long, List<String>>();
+
+        expandableListAdapter = new CustomExpandableListAdapter(getContext(), buildingDetails, buildingIdExtinguisher);
         expandableListView.setAdapter(expandableListAdapter);
 
         bundle = this.getArguments();
@@ -134,22 +148,30 @@ public class BuildingFragment extends Fragment {
                         public void onResponse(JSONObject response) {
                             try {
                                 JSONArray jsonArray = response.getJSONArray("data");
+
                                 for (int i = 0; i < jsonArray.length(); i++) {
                                     JSONObject building = jsonArray.getJSONObject(i);
 
                                     Long id = building.getLong("id");
                                     String building_name = building.getString("building_name");
                                     String building_address = building.getString("building_address");
-                                    String building_phone = building.getString("building_city");
+                                    String building_city = building.getString("building_city");
                                     String building_postalcode = building.getString("building_postalcode");
 
+//                                    List<BuildingItem> buildingItems = new ArrayList<BuildingItem>();
+                                    BuildingItem buildingItem = new BuildingItem(id, building_name, building_address, building_city, building_postalcode);
+//                                    buildingItems.add(buildingItem);
 
                                     String buildingString = building_name+ " " +building_address + " " +
-                                            building_phone+ " " + building_postalcode;
-                                    List<String> buildingExtinguisher = new ArrayList<>();
+                                            building_city+ " " + building_postalcode;
+                                    List<String> buildingExtinguisher = new ArrayList<String>();
                                     buildingExtinguisher.add("fff");
-                                    expandableListTitle.add(buildingString);
-                                    expandableListDetail.put(buildingString, buildingExtinguisher);
+                                    buildingDetails.add(buildingItem);
+                                    System.out.println("w" + buildingItem.getId() + buildingExtinguisher);
+                                    System.out.println("q" + Long.valueOf(buildingItem.getId()));
+                                    buildingIdExtinguisher.put(Long.valueOf(buildingItem.getId()), buildingExtinguisher);
+
+
                                 }
                                 expandableListAdapter.notifyDataSetChanged();
                             } catch (JSONException e) {
@@ -189,6 +211,13 @@ public class BuildingFragment extends Fragment {
         return root;
     }
 
+    public void MethodCallbackgo(String data) {
+        // here you have data
+        //use it ...
+
+    }
+
+
     // opens dialog box adding building form
     public void buildingDialogBox() {
 
@@ -211,7 +240,7 @@ public class BuildingFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
 
-                        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+                        final RequestQueue requestQueue = Volley.newRequestQueue(getContext());
                         JSONObject object = new JSONObject();
                         try {
                             //input your API parameters
@@ -232,17 +261,26 @@ public class BuildingFragment extends Fragment {
                                     @Override
                                     public void onResponse(JSONObject response) {
                                         Toast.makeText(getContext(), "Building Created!", Toast.LENGTH_LONG).show();
-                                        expandableListTitle.add(buildingName.getText().toString() + " " +
-                                                buildingAddress.getText().toString() + " " +
-                                                buildingCity.getText().toString() + " " +
+
+                                        System.out.println("respond" + response);
+
+                                        BuildingItem buildingItem = new BuildingItem(1, buildingName.getText().toString(),
+                                                buildingAddress.getText().toString(), buildingCity.getText().toString(),
                                                 buildingPostalCode.getText().toString());
+
+                                        //response.getJSONObject();
+
+//                                        buildingDetails.add(buildingName.getText().toString() + " " +
+//                                                buildingAddress.getText().toString() + " " +
+//                                                buildingCity.getText().toString() + " " +
+//                                                buildingPostalCode.getText().toString());
 
                                         String buildingString = buildingName.getText().toString() + " " + buildingAddress.getText().toString() + " " +
                                                 buildingCity.getText().toString() + " " + buildingPostalCode.getText().toString();
 
                                         List<String> buildingExtinguisher = new ArrayList<>();
                                         buildingExtinguisher.add("fff");
-                                        expandableListDetail.put(buildingString, buildingExtinguisher);
+                                        buildingIdExtinguisher.put(buildingItem.getId(), buildingExtinguisher);
 
                                         expandableListAdapter.notifyDataSetChanged();
                                     }
@@ -579,4 +617,6 @@ public class BuildingFragment extends Fragment {
         alertDialog.show();
 
     }
+
+
 }

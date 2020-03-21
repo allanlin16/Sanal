@@ -33,19 +33,19 @@ import java.util.List;
 public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
 
     private Context context;
-    private List<String> expandableListTitle;
-    private HashMap<String, List<String>> expandableListDetail;
+    private List<BuildingItem> buildingDetails;
+    private HashMap<Long, List<String>> buildingIdExtinguisher;
 
-    public CustomExpandableListAdapter(Context context, List<String> expandableListTitle,
-                                       HashMap<String, List<String>> expandableListDetail) {
+    public CustomExpandableListAdapter(Context context, List<BuildingItem> buildingDetails,
+                                       HashMap<Long, List<String>> buildingIdExtinguisher) {
         this.context = context;
-        this.expandableListTitle = expandableListTitle;
-        this.expandableListDetail = expandableListDetail;
+        this.buildingDetails = buildingDetails;
+        this.buildingIdExtinguisher = buildingIdExtinguisher;
     }
 
     @Override
     public Object getChild(int listPosition, int expandedListPosition) {
-        return this.expandableListDetail.get(this.expandableListTitle.get(listPosition))
+        return this.buildingIdExtinguisher.get(Long.valueOf(this.buildingDetails.get(listPosition).getId()))
                 .get(expandedListPosition);
     }
 
@@ -75,29 +75,39 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int listPosition) {
-        System.out.println(this.expandableListDetail);
-        return this.expandableListDetail.get(this.expandableListTitle.get(listPosition)).size();
+        System.out.println(this.buildingIdExtinguisher);
+        return this.buildingIdExtinguisher.get(Long.valueOf(this.buildingDetails.get(listPosition).getId())).size();
     }
 
     @Override
     public Object getGroup(int listPosition) {
-        return this.expandableListTitle.get(listPosition);
+        return this.buildingDetails.get(listPosition);
     }
 
     @Override
     public int getGroupCount() {
-        return this.expandableListTitle.size();
+        return this.buildingDetails.size();
     }
 
     @Override
-    public long getGroupId(int listPosition) {
+    public long getGroupId(int listPosition)  {
         return listPosition;
     }
 
     @Override
     public View getGroupView(int listPosition, boolean isExpanded,
                              View convertView, final ViewGroup parent) {
-        String listTitle = (String) getGroup(listPosition);
+        buildingDetails.get(listPosition).getBuildingName();
+        buildingDetails.get(listPosition).getBuildingAddress();
+        buildingDetails.get(listPosition).getBuildingCity();
+        buildingDetails.get(listPosition).getBuildingPostalCode();
+
+        String buildingD = buildingDetails.get(listPosition).getBuildingName() +
+                buildingDetails.get(listPosition).getBuildingAddress() +
+                buildingDetails.get(listPosition).getBuildingCity()+
+                buildingDetails.get(listPosition).getBuildingPostalCode();
+
+        //buildingD = (String) getGroup(listPosition);
         if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = layoutInflater.inflate(R.layout.list_group, null);
@@ -219,7 +229,7 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
             }
         });
         listTitleTextView.setTypeface(null, Typeface.BOLD);
-        listTitleTextView.setText(listTitle);
+        listTitleTextView.setText(buildingD);
         return convertView;
     }
 
