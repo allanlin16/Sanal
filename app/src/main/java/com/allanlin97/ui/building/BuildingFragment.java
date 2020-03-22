@@ -261,28 +261,24 @@ public class BuildingFragment extends Fragment {
                                     @Override
                                     public void onResponse(JSONObject response) {
                                         Toast.makeText(getContext(), "Building Created!", Toast.LENGTH_LONG).show();
+                                        JSONObject jsonResponse = null;
+                                        try {
+                                            jsonResponse = response.getJSONObject("data");
+                                            Long id = jsonResponse.getLong("id");
 
-                                        System.out.println("respond" + response);
+                                            BuildingItem buildingItem = new BuildingItem(id, buildingName.getText().toString(),
+                                                    buildingAddress.getText().toString(), buildingCity.getText().toString(),
+                                                    buildingPostalCode.getText().toString());
 
-                                        BuildingItem buildingItem = new BuildingItem(1, buildingName.getText().toString(),
-                                                buildingAddress.getText().toString(), buildingCity.getText().toString(),
-                                                buildingPostalCode.getText().toString());
 
-                                        //response.getJSONObject();
+                                            List<String> buildingExtinguisher = new ArrayList<>();
+                                            buildingExtinguisher.add("fff");
+                                            buildingIdExtinguisher.put(buildingItem.getId(), buildingExtinguisher);
+                                            expandableListAdapter.notifyDataSetChanged();
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
 
-//                                        buildingDetails.add(buildingName.getText().toString() + " " +
-//                                                buildingAddress.getText().toString() + " " +
-//                                                buildingCity.getText().toString() + " " +
-//                                                buildingPostalCode.getText().toString());
-
-                                        String buildingString = buildingName.getText().toString() + " " + buildingAddress.getText().toString() + " " +
-                                                buildingCity.getText().toString() + " " + buildingPostalCode.getText().toString();
-
-                                        List<String> buildingExtinguisher = new ArrayList<>();
-                                        buildingExtinguisher.add("fff");
-                                        buildingIdExtinguisher.put(buildingItem.getId(), buildingExtinguisher);
-
-                                        expandableListAdapter.notifyDataSetChanged();
                                     }
                                 }, new Response.ErrorListener() {
                             @Override
