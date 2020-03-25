@@ -158,17 +158,17 @@ public class BuildingFragment extends Fragment {
                                     String building_city = building.getString("building_city");
                                     String building_postalcode = building.getString("building_postalcode");
 
-//                                    List<BuildingItem> buildingItems = new ArrayList<BuildingItem>();
-                                    BuildingItem buildingItem = new BuildingItem(id, building_name, building_address, building_city, building_postalcode);
-//                                    buildingItems.add(buildingItem);
 
-                                    String buildingString = building_name+ " " +building_address + " " +
-                                            building_city+ " " + building_postalcode;
+                                    BuildingItem buildingItem = new BuildingItem(id, building_name, building_address, building_city, building_postalcode);
+
+                                    //create array
                                     List<String> buildingExtinguisher = new ArrayList<String>();
+                                    //add the building string for now
+                                    //TODO: add extinguisher object
                                     buildingExtinguisher.add("fff");
+                                    // add the building object
                                     buildingDetails.add(buildingItem);
-                                    System.out.println("w" + buildingItem.getId() + buildingExtinguisher);
-                                    System.out.println("q" + Long.valueOf(buildingItem.getId()));
+                                    //add the building and with extinguisher object
                                     buildingIdExtinguisher.put(Long.valueOf(buildingItem.getId()), buildingExtinguisher);
 
 

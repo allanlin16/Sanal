@@ -4,8 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -95,16 +93,19 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public View getGroupView(int listPosition, boolean isExpanded,
+    public View getGroupView(final int listPosition, boolean isExpanded,
                              View convertView, final ViewGroup parent) {
+
         buildingDetails.get(listPosition).getBuildingName();
         buildingDetails.get(listPosition).getBuildingAddress();
         buildingDetails.get(listPosition).getBuildingCity();
         buildingDetails.get(listPosition).getBuildingPostalCode();
 
-        String buildingD = buildingDetails.get(listPosition).getBuildingName() +
-                buildingDetails.get(listPosition).getBuildingAddress() +
-                buildingDetails.get(listPosition).getBuildingCity()+
+        System.out.println("hi" + buildingDetails.get(listPosition).getId());
+
+        String buildingD = buildingDetails.get(listPosition).getBuildingName() + " " +
+                buildingDetails.get(listPosition).getBuildingAddress() + " " +
+                buildingDetails.get(listPosition).getBuildingCity()+ " " +
                 buildingDetails.get(listPosition).getBuildingPostalCode();
 
         //buildingD = (String) getGroup(listPosition);
@@ -159,12 +160,12 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
                                                     e.printStackTrace();
                                                 }
                                                 // Enter the correct url for your api service site
-                                                String url = "https://alin.scweb.ca/SanalAPI/api/building/1";
+                                                String url = "https://alin.scweb.ca/SanalAPI/api/building/"+buildingDetails.get(listPosition).getId();
                                                 JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, object,
                                                         new Response.Listener<JSONObject>() {
                                                             @Override
                                                             public void onResponse(JSONObject response) {
-                                                                Toast.makeText(parent.getContext(), "Client Updated!", Toast.LENGTH_LONG).show();
+                                                                Toast.makeText(parent.getContext(), "Building Updated!", Toast.LENGTH_LONG).show();
                                                                 //TODO: update the expanablelistview
                                                             }
                                                         }, new Response.ErrorListener() {
@@ -198,10 +199,8 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
                             case R.id.delete:
                                 RequestQueue requestQueue = Volley.newRequestQueue(parent.getContext());
                                 JSONObject object = new JSONObject();
-                                // TODO: remove from adapter
-                                //expandableListTitle.removeAll();
-                                // Enter the correct url for your api service site
-                                String url = "https://alin.scweb.ca/SanalAPI/api/building/20";
+                                // TODO: remove from adapter expandableListTitle.removeAll();
+                                String url = "https://alin.scweb.ca/SanalAPI/api/building/"+buildingDetails.get(listPosition).getId();
                                 JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, url, object,
                                         new Response.Listener<JSONObject>() {
                                             @Override
