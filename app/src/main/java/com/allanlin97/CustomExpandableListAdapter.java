@@ -73,7 +73,6 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int listPosition) {
-        System.out.println(this.buildingIdExtinguisher);
         return this.buildingIdExtinguisher.get(Long.valueOf(this.buildingDetails.get(listPosition).getId())).size();
     }
 
@@ -100,8 +99,6 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
         buildingDetails.get(listPosition).getBuildingAddress();
         buildingDetails.get(listPosition).getBuildingCity();
         buildingDetails.get(listPosition).getBuildingPostalCode();
-
-        System.out.println("hi" + buildingDetails.get(listPosition).getId());
 
         String buildingD = buildingDetails.get(listPosition).getBuildingName() + " " +
                 buildingDetails.get(listPosition).getBuildingAddress() + " " +

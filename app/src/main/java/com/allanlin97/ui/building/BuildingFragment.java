@@ -28,7 +28,6 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.allanlin97.BuildingItem;
 import com.allanlin97.CustomExpandableListAdapter;
-import com.allanlin97.ExpandableListViewData;
 import com.allanlin97.R;
 import com.allanlin97.ui.extinguisher.ExtinguisherFragment;
 import com.android.volley.Request;
@@ -63,19 +62,11 @@ public class BuildingFragment extends Fragment {
     ImageView extinguisherImageView;
     RequestQueue requestQueue;
     Bundle bundle;
-    //BuildingItem buildingItem;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         buildingViewModel = ViewModelProviders.of(this).get(BuildingViewModel.class);
         View root = inflater.inflate(R.layout.fragment_building, container, false);
-
-//        Bundle arguments = getArguments();
-//
-//        Long addedGrocery = arguments.getLong("buildingId", 8);
-//        expandableListAdapter = new CustomExpandableListAdapter(getActivity(), null,
-//                0, addedGrocery, addedGroceryGrams ) ;
-//        expandableListView.setAdapter(expandableListAdapter);
 
         final TextView textView = root.findViewById(R.id.recent_title_label);
         buildingViewModel.getText().observe(this, new Observer<String>() {
@@ -211,13 +202,6 @@ public class BuildingFragment extends Fragment {
         return root;
     }
 
-    public void MethodCallbackgo(String data) {
-        // here you have data
-        //use it ...
-
-    }
-
-
     // opens dialog box adding building form
     public void buildingDialogBox() {
 
@@ -230,9 +214,6 @@ public class BuildingFragment extends Fragment {
         final EditText buildingAddress = dialogView.findViewById(R.id.addBuildingAddress);
         final EditText buildingCity = dialogView.findViewById(R.id.addBuildingCity);
         final EditText buildingPostalCode = dialogView.findViewById(R.id.addBuildingPostalCode);
-
-        //final EditText extinguisherArea = dialogView.findViewById(R.id.addExtinguisherArea);
-        //final EditText extinguisherLocation = dialogView.findViewById(R.id.addExtinguisherLocation);
 
         alertDialogBuilder.setPositiveButton("Create",
                 new DialogInterface.OnClickListener() {
@@ -256,6 +237,7 @@ public class BuildingFragment extends Fragment {
                         // Enter the correct url for your api service site
                         final long clientId = bundle.getLong("clientId");
                         String url = "https://alin.scweb.ca/SanalAPI/api/building?client_id="+clientId;
+                        System.out.println("" + clientId);
                         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, object,
                                 new Response.Listener<JSONObject>() {
                                     @Override
@@ -287,16 +269,7 @@ public class BuildingFragment extends Fragment {
                             }
                         });
                         requestQueue.add(jsonObjectRequest);
-
-                        //String extinguisherChild = extinguisherArea.getText().toString() + " " + extinguisherLocation.getText().toString();
-
-
-                        //expandableListTitle.add(buildingName.getText().toString() + buildingAddress.getText().toString() + buildingCity.getText().toString());
-//                       List<String> buildingExtinguisher = new ArrayList<>();
-//                       buildingExtinguisher.add("ggg");
-//
-//                        //buildingExtinguisher.add(extinguisherChild);
-//                        expandableListDetail.put(buildingName.getText().toString(), buildingExtinguisher);
+;
 
                     }
                 });
@@ -520,7 +493,7 @@ public class BuildingFragment extends Fragment {
                             object.put("extinguisher_status",statusSpinner.getSelectedItem().toString());
                             object.put("extinguisher_comment",commentEditText.getText().toString());
                             object.put("extinguisher_photourl","photo");
-                            object.put("building_id",6);
+                            object.put("building_id",7);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

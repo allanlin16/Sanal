@@ -2,6 +2,7 @@ package com.allanlin97.ui.extinguisher;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
@@ -81,19 +82,19 @@ public class ExtinguisherFragment extends Fragment {
         };
 
         type = root.findViewById(R.id.extinguisherType);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
+        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
                 android.R.layout.simple_spinner_item, typeSpinner);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         type.setAdapter(adapter);
 
         rating = root.findViewById(R.id.extinguisherRating);
-        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(getContext(),
+        final ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(getContext(),
                 android.R.layout.simple_spinner_item, ratingSpinner);
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         rating.setAdapter(adapter2);
 
         status = root.findViewById(R.id.extinguisherStatus);
-        ArrayAdapter<String> adapter3 = new ArrayAdapter<String> (getContext(),
+        final ArrayAdapter<String> adapter3 = new ArrayAdapter<String> (getContext(),
                 android.R.layout.simple_spinner_item, statusSpinner);
         adapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         status.setAdapter(adapter3);
@@ -114,7 +115,6 @@ public class ExtinguisherFragment extends Fragment {
         photoButton = root.findViewById(R.id.updatePhotoButton);
         updateButton = root.findViewById(R.id.updateExtinguisherButton);
 
-        //EnableRuntimePermission();
         imageView.setRotation(90);
 
         photoButton.setOnClickListener(new View.OnClickListener() {
@@ -148,13 +148,13 @@ public class ExtinguisherFragment extends Fragment {
                     object.put("extinguisher_nextservicedate", nSDateEditText.getText().toString());
                     object.put("extinguisher_comment", commentEditText.getText().toString());
                     object.put("extinguisher_status", status.getSelectedItem().toString());
-                    object.put("extinguisher_photourl", "");
+                    object.put("extinguisher_photourl", "gg");
                     object.put("building_id",6);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 // Enter the correct url for your api service site
-                String url = "https://alin.scweb.ca/SanalAPI/api/extinguisher/1";
+                String url = "https://alin.scweb.ca/SanalAPI/api/extinguisher/9";
                 JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, object,
                         new Response.Listener<JSONObject>() {
                             @Override
@@ -172,9 +172,6 @@ public class ExtinguisherFragment extends Fragment {
                 requestQueue.add(jsonObjectRequest);
             }
         });
-
-
-
 
         final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener(){
             @Override
@@ -268,7 +265,68 @@ public class ExtinguisherFragment extends Fragment {
             }
         });
 
-        getExtinguisher();
+
+        // GET request for getting the extinguisher
+        String url = "https://alin.scweb.ca/SanalAPI/api/extinguisher?building_id=6";
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray jsonArray = response.getJSONArray("data");
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject extinguisher = jsonArray.getJSONObject(i);
+
+                                //Long id = extinguisher.getLong("id");
+                                String make = extinguisher.getString("extinguisher_make");
+                                String serialNumber = extinguisher.getString("extinguisher_serialnumber");
+                                String barcode = extinguisher.getString("extinguisher_barcodenumber");
+                                String area = extinguisher.getString("extinguisher_locationarea");
+                                String location = extinguisher.getString("extinguisher_locationdescription");
+                                String typeValue = extinguisher.getString("extinguisher_type");
+                                String ratingValue = extinguisher.getString("extinguisher_rating");
+                                String mDate = extinguisher.getString("extinguisher_manufacturedate");
+                                String hDate = extinguisher.getString("extinguisher_htestdate");
+                                String sDate = extinguisher.getString("extinguisher_servicedate");
+                                String nSDate = extinguisher.getString("extinguisher_nextservicedate");
+                                String statusValue = extinguisher.getString("extinguisher_status");
+                                String comment = extinguisher.getString("extinguisher_comment");
+                                String photoUrl = extinguisher.getString("extinguisher_photourl");
+
+                                makeEditText.setText(make);
+                                serialNumberEditText.setText(serialNumber);
+                                barcodeEditText.setText(barcode);
+                                areaEditText.setText(area);
+                                locationEditText.setText(location);
+                                int hold = adapter.getPosition(typeValue);//finding value in spinner list
+                                type.setSelection(hold);//setting spinner
+                                int hold2 = adapter2.getPosition(ratingValue);
+                                rating.setSelection(hold2);
+                                mDateEditText.setText(mDate);
+                                hDateEditText.setText(hDate);
+                                sDateEditText.setText(sDate);
+                                nSDateEditText.setText(nSDate);
+                                int hold3 = adapter3.getPosition(statusValue);
+                                status.setSelection(hold3);
+                                commentEditText.setText(comment);
+
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO: Handle error
+                        error.printStackTrace();
+                    }
+                });
+        requestQueue.add(jsonObjectRequest);
+
         return root;
     }
 
@@ -310,88 +368,5 @@ public class ExtinguisherFragment extends Fragment {
         }
 
 
-    }
-
-//    public void EnableRuntimePermission(){
-//
-//        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-//                Manifest.permission.CAMERA))
-//        {
-//
-//            Toast.makeText(this,"CAMERA permission allows us to Access CAMERA app", Toast.LENGTH_LONG).show();
-//
-//        } else {
-//
-//            ActivityCompat.requestPermissions(this,new String[]{
-//                    Manifest.permission.CAMERA}, RequestPermissionCode);
-//
-//        }
-//    }
-//
-//    @Override
-//    public void onRequestPermissionsResult(int RC, String per[], int[] PResult) {
-//
-//        switch (RC) {
-//
-//            case RequestPermissionCode:
-//
-//                if (PResult.length > 0 && PResult[0] == PackageManager.PERMISSION_GRANTED) {
-//
-//                    Toast.makeText(this,"Permission Granted, Now your application can access CAMERA.", Toast.LENGTH_LONG).show();
-//
-//                } else {
-//
-//                    //Toast.makeText(this,"Permission Canceled, Now your application cannot access CAMERA.", Toast.LENGTH_LONG).show();
-//
-//                }
-//                break;
-//        }
-//    }
-
-    private void getExtinguisher() {
-        String url = "https://alin.scweb.ca/SanalAPI/api/extinguisher/7";
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray jsonArray = response.getJSONArray("data");
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                JSONObject extinguisher = jsonArray.getJSONObject(i);
-
-                                //Long id = extinguisher.getLong("id");
-                                String make = extinguisher.getString("extinguisher_make");
-                                String serialNumber = extinguisher.getString("extinguisher_serialnumber");
-                                String barcode = extinguisher.getString("extinguisher_barcodenumber");
-                                String area = extinguisher.getString("extinguisher_locationarea");
-                                String location = extinguisher.getString("extinguisher_locationdescription");
-                                String type = extinguisher.getString("extinguisher_type");
-                                String rating = extinguisher.getString("extinguisher_rating");
-                                String mDate = extinguisher.getString("extinguisher_manufacturedate");
-                                String hDate = extinguisher.getString("extinguisher_htestdate");
-                                String sDate = extinguisher.getString("extinguisher_servicedate");
-                                String nSDate = extinguisher.getString("extinguisher_nextservicedate");
-                                String status = extinguisher.getString("extinguisher_status");
-                                String comment = extinguisher.getString("extinguisher_comment");
-                                String photoUrl = extinguisher.getString("extinguisher_photourl");
-
-                                makeEditText.setText(make);
-                                Log.d("hi", make);
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // TODO: Handle error
-                        error.printStackTrace();
-                    }
-                });
-        requestQueue.add(jsonObjectRequest);
     }
 }

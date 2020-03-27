@@ -144,11 +144,11 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
                                     JSONObject object = new JSONObject();
                                     removeAt(getAdapterPosition());
                                     String url = "https://alin.scweb.ca/SanalAPI/api/client/"+client_id;
+                                    System.out.println("deleted" + client_id);
                                     JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, url, object,
                                             new Response.Listener<JSONObject>() {
                                                 @Override
                                                 public void onResponse(JSONObject response) {
-
                                                 }
                                             }, new Response.ErrorListener() {
                                         @Override
@@ -178,7 +178,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
                     final Bundle bundle = new Bundle();
                     bundle.putString("clientName", clientList.get(getAdapterPosition()).getClientName());
                     bundle.putLong("clientId", clientList.get(getAdapterPosition()).getId());
-
+                    //System.out.println("" + clientList.get(getAdapterPosition()).getId());
 
                     myFragment.setArguments(bundle);
 
@@ -223,7 +223,6 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
         holder.cardViewEmail.setText(item.getClientEmail());
         holder.cardViewPhone.setText(item.getClientPhoneNumber());
         holder.cardViewAddress.setText(item.getClientAddress());
-
     }
 
     @Override

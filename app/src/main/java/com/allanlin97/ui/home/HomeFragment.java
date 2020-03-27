@@ -91,7 +91,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void jsonParse() {
-        String url = "https://alin.scweb.ca/SanalAPI/api/client?user_id=6";
+        String url = "https://alin.scweb.ca/SanalAPI/api/client?user_id=7";
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -157,12 +157,12 @@ public class HomeFragment extends Fragment {
                             object.put("client_address",address.getText().toString());
                             object.put("client_phone",phone.getText().toString());
                             object.put("client_email",email.getText().toString());
-                            object.put("user_id",6);
+                            object.put("user_id",7);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                         // Enter the correct url for your api service site
-                        String url = "https://alin.scweb.ca/SanalAPI/api/client?user_id=6";
+                        String url = "https://alin.scweb.ca/SanalAPI/api/client?user_id=7";
                         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, object,
                                 new Response.Listener<JSONObject>() {
                                     @Override
