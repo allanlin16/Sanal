@@ -32,10 +32,10 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
 
     private Context context;
     private List<BuildingItem> buildingDetails;
-    private HashMap<Long, List<String>> buildingIdExtinguisher;
+    private HashMap<Long, List<ExtinguisherItem>> buildingIdExtinguisher;
 
     public CustomExpandableListAdapter(Context context, List<BuildingItem> buildingDetails,
-                                       HashMap<Long, List<String>> buildingIdExtinguisher) {
+                                       HashMap<Long, List<ExtinguisherItem>> buildingIdExtinguisher) {
         this.context = context;
         this.buildingDetails = buildingDetails;
         this.buildingIdExtinguisher = buildingIdExtinguisher;
@@ -55,14 +55,15 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getChildView(int listPosition, final int expandedListPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
-        final String expandedListText = (String) getChild(listPosition, expandedListPosition);
+        final ExtinguisherItem expandedListText = (ExtinguisherItem) getChild(listPosition, expandedListPosition);
         if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater) this.context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = layoutInflater.inflate(R.layout.list_item, null);
         }
         TextView expandedListTextView = convertView.findViewById(R.id.expandedListItem);
-        expandedListTextView.setText(expandedListText);
+        expandedListTextView.setText(expandedListText.getSerialNumber());
+
 
 
 

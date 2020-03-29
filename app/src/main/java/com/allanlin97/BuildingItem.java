@@ -1,5 +1,7 @@
 package com.allanlin97;
 
+import androidx.annotation.NonNull;
+
 public class BuildingItem {
 
     private long id;
@@ -55,4 +57,11 @@ public class BuildingItem {
     public void setBuildingPostalCode(String buildingPostalCode) {
         this.buildingPostalCode = buildingPostalCode;
     }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return this.buildingName + " " + this.id;
+    }
+
 }

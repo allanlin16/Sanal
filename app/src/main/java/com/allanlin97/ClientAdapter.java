@@ -95,7 +95,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
                                                         object.put("client_address",address.getText().toString());
                                                         object.put("client_phone",phone.getText().toString());
                                                         object.put("client_email",email.getText().toString());
-                                                        object.put("user_id",6);
+                                                        object.put("user_id",7);
                                                     } catch (JSONException e) {
                                                         e.printStackTrace();
                                                     }
@@ -110,6 +110,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
                                                                     cardViewAddress.setText(address.getText().toString());
                                                                     cardViewPhone.setText(phone.getText().toString());
                                                                     cardViewEmail.setText(email.getText().toString());
+
                                                                 }
                                                             }, new Response.ErrorListener() {
                                                         @Override
@@ -149,6 +150,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
                                             new Response.Listener<JSONObject>() {
                                                 @Override
                                                 public void onResponse(JSONObject response) {
+                                                    Toast.makeText(itemView.getContext(), "Client Deleted!", Toast.LENGTH_LONG).show();
                                                 }
                                             }, new Response.ErrorListener() {
                                         @Override
@@ -186,14 +188,9 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
                             .replace(R.id.nav_host_fragment, myFragment)
                             .addToBackStack(null)
                             .commit();
-
                 }
             });
-
-
-
         }
-
     }
 
     public ClientAdapter(ArrayList<ClientItem> ClientList) {

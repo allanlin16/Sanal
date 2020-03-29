@@ -11,17 +11,17 @@ public class ExtinguisherItem {
     private String description;
     private String type;
     private String rating;
-    private Date mDate;
-    private Date hDate;
-    private Date sDate;
-    private Date nSDate;
+    private String mDate;
+    private String hDate;
+    private String sDate;
+    private String nSDate;
     private String comment;
     private String status;
     private String photo;
 
     public ExtinguisherItem(long id, String make, String serialNumber, String barcodeNumber,
                             String area, String description, String type, String rating,
-                            Date mDate, Date hDate, Date sDate, Date nSDate,
+                            String mDate, String hDate, String sDate, String nSDate,
                             String comment, String status, String photo) {
         this.id = id;
         this.make = make;
@@ -104,35 +104,35 @@ public class ExtinguisherItem {
         this.rating = rating;
     }
 
-    public Date getmDate() {
+    public String getmDate() {
         return mDate;
     }
 
-    public void setmDate(Date mDate) {
+    public void setmDate(String mDate) {
         this.mDate = mDate;
     }
 
-    public Date gethDate() {
+    public String gethDate() {
         return hDate;
     }
 
-    public void sethDate(Date hDate) {
+    public void sethDate(String hDate) {
         this.hDate = hDate;
     }
 
-    public Date getsDate() {
+    public String getsDate() {
         return sDate;
     }
 
-    public void setsDate(Date sDate) {
+    public void setsDate(String sDate) {
         this.sDate = sDate;
     }
 
-    public Date getnSDate() {
+    public String getnSDate() {
         return nSDate;
     }
 
-    public void setnSDate(Date nSDate) {
+    public void setnSDate(String nSDate) {
         this.nSDate = nSDate;
     }
 

@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -28,6 +29,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.allanlin97.BuildingItem;
 import com.allanlin97.CustomExpandableListAdapter;
+import com.allanlin97.ExtinguisherItem;
 import com.allanlin97.R;
 import com.allanlin97.ui.extinguisher.ExtinguisherFragment;
 import com.android.volley.Request;
@@ -35,6 +37,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 import com.github.clans.fab.FloatingActionButton;
 
@@ -45,6 +48,7 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -56,12 +60,13 @@ public class BuildingFragment extends Fragment {
     CustomExpandableListAdapter expandableListAdapter;
 
     List<BuildingItem> buildingDetails;
-    HashMap<Long, List<String>> buildingIdExtinguisher;
+    HashMap<Long, List<ExtinguisherItem>> buildingIdExtinguisher;
 
     FloatingActionButton addBuildingFab, addExtinguisherFab, generatePDFFab;
     ImageView extinguisherImageView;
     RequestQueue requestQueue;
     Bundle bundle;
+    long selectedBuildingId;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -113,7 +118,7 @@ public class BuildingFragment extends Fragment {
 
 
         buildingDetails = new ArrayList(buildingItems);
-        buildingIdExtinguisher = new HashMap<Long, List<String>>();
+        buildingIdExtinguisher = new HashMap<Long, List<ExtinguisherItem>>();
 
         expandableListAdapter = new CustomExpandableListAdapter(getContext(), buildingDetails, buildingIdExtinguisher);
         expandableListView.setAdapter(expandableListAdapter);
@@ -132,7 +137,7 @@ public class BuildingFragment extends Fragment {
 
             String url = "https://alin.scweb.ca/SanalAPI/api/building?client_id="+clientId;
 
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+            final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                     (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 
                         @Override
@@ -144,25 +149,65 @@ public class BuildingFragment extends Fragment {
                                     JSONObject building = jsonArray.getJSONObject(i);
 
                                     Long id = building.getLong("id");
-                                    String building_name = building.getString("building_name");
-                                    String building_address = building.getString("building_address");
-                                    String building_city = building.getString("building_city");
-                                    String building_postalcode = building.getString("building_postalcode");
+                                    final String building_name = building.getString("building_name");
+                                    final String building_address = building.getString("building_address");
+                                    final String building_city = building.getString("building_city");
+                                    final String building_postalcode = building.getString("building_postalcode");
 
-
-                                    BuildingItem buildingItem = new BuildingItem(id, building_name, building_address, building_city, building_postalcode);
-
-                                    //create array
-                                    List<String> buildingExtinguisher = new ArrayList<String>();
-                                    //add the building string for now
-                                    //TODO: add extinguisher object
-                                    buildingExtinguisher.add("fff");
+                                    final BuildingItem buildingItem = new BuildingItem(id, building_name, building_address, building_city, building_postalcode);
                                     // add the building object
                                     buildingDetails.add(buildingItem);
-                                    //add the building and with extinguisher object
-                                    buildingIdExtinguisher.put(Long.valueOf(buildingItem.getId()), buildingExtinguisher);
+
+                                    String extinguisherUrl ="https://alin.scweb.ca/SanalAPI/api/extinguisher?building_id="+ id;
+
+                                    // Formulate the request and handle the response.
+                                    JsonObjectRequest extinguisherRequest = new JsonObjectRequest(Request.Method.GET, extinguisherUrl, null,
+                                            new Response.Listener<JSONObject>() {
+                                                @Override
+                                                public void onResponse(JSONObject response) {
+
+                                                    try {
+                                                        JSONArray jsonArray = response.getJSONArray("data");
+                                                        List<ExtinguisherItem> buildingExtinguisher = new ArrayList<>();
+                                                        for (int i = 0; i < jsonArray.length(); i++) {
+                                                            JSONObject jsonResponse = jsonArray.getJSONObject(i);
+                                                            Long id = jsonResponse.getLong("id");
+                                                            String make = jsonResponse.getString("extinguisher_make");
+                                                            String serialNumber = jsonResponse.getString("extinguisher_serialnumber");
+                                                            String barcode = jsonResponse.getString("extinguisher_barcodenumber");
+                                                            String area = jsonResponse.getString("extinguisher_locationarea");
+                                                            String location = jsonResponse.getString("extinguisher_locationdescription");
+                                                            String typeValue = jsonResponse.getString("extinguisher_type");
+                                                            String ratingValue = jsonResponse.getString("extinguisher_rating");
+                                                            String mDate = jsonResponse.getString("extinguisher_manufacturedate");
+                                                            String hDate = jsonResponse.getString("extinguisher_htestdate");
+                                                            String sDate = jsonResponse.getString("extinguisher_servicedate");
+                                                            String nSDate = jsonResponse.getString("extinguisher_nextservicedate");
+                                                            String statusValue = jsonResponse.getString("extinguisher_status");
+                                                            String comment = jsonResponse.getString("extinguisher_comment");
+                                                            String photoUrl = jsonResponse.getString("extinguisher_photourl");
+
+                                                            ExtinguisherItem extinguisherItem = new ExtinguisherItem(id, make,
+                                                                    serialNumber, barcode, area, location, typeValue, ratingValue,
+                                                                    mDate, hDate, sDate, nSDate, statusValue, comment, photoUrl);
 
 
+                                                            buildingExtinguisher.add(extinguisherItem);
+                                                        }
+                                                        //add the building and with extinguisher object
+                                                        buildingIdExtinguisher.put(Long.valueOf(buildingItem.getId()), buildingExtinguisher);
+                                                    } catch (JSONException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                }
+                                            },
+                                            new Response.ErrorListener() {
+                                                @Override
+                                                public void onErrorResponse(VolleyError error) {
+                                                    // Handle error
+                                                }
+                                            });
+                                    requestQueue.add(extinguisherRequest);
                                 }
                                 expandableListAdapter.notifyDataSetChanged();
                             } catch (JSONException e) {
@@ -181,8 +226,6 @@ public class BuildingFragment extends Fragment {
 
         }
 
-
-
         expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
@@ -192,12 +235,10 @@ public class BuildingFragment extends Fragment {
                 activity.getSupportFragmentManager().beginTransaction()
                         .replace(R.id.nav_host_fragment, myFragment)
                         .addToBackStack(null).commit();
-
+                expandableListAdapter.notifyDataSetChanged();
                 return false;
             }
         });
-
-        expandableListAdapter.notifyDataSetChanged();
 
         return root;
     }
@@ -234,7 +275,7 @@ public class BuildingFragment extends Fragment {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        // Enter the correct url for your api service site
+
                         final long clientId = bundle.getLong("clientId");
                         String url = "https://alin.scweb.ca/SanalAPI/api/building?client_id="+clientId;
                         System.out.println("" + clientId);
@@ -253,9 +294,16 @@ public class BuildingFragment extends Fragment {
                                                     buildingPostalCode.getText().toString());
 
 
-                                            List<String> buildingExtinguisher = new ArrayList<>();
-                                            buildingExtinguisher.add("fff");
-                                            buildingIdExtinguisher.put(buildingItem.getId(), buildingExtinguisher);
+//                                            List<ExtinguisherItem> buildingExtinguisher = new ArrayList<>();
+//
+//
+//                                            ExtinguisherItem extinguisherItem = new ExtinguisherItem( 2, "String make", "uiui", "String barcodeNumber",
+//                                                    "String area", "String description", "Water", "A",
+//                                                    new Date(2017,10,22), new Date(2017,10,22), new Date(2017,10,22), new Date(2017,10,22),
+//                                                    "String comment", "String status", "String photo");
+//
+//                                            buildingExtinguisher.add(extinguisherItem);
+//                                            buildingIdExtinguisher.put(buildingItem.getId(), buildingExtinguisher);
                                             expandableListAdapter.notifyDataSetChanged();
                                         } catch (JSONException e) {
                                             e.printStackTrace();
@@ -302,10 +350,6 @@ public class BuildingFragment extends Fragment {
 
         final Calendar myCalendar = Calendar.getInstance();
 
-        String[] buildingSpinnerArray = new String[] {
-                "Building 1", "Building 2"
-        };
-
         String[] typeSpinnerArray = new String[] {
                 "Water", "Foam", "Dry Powder", "CO2", "Wet Chemical"
         };
@@ -343,19 +387,36 @@ public class BuildingFragment extends Fragment {
                 android.R.layout.simple_spinner_item, typeSpinnerArray);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         typeSpinner.setAdapter(adapter);
+
         ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(getContext(),
                 android.R.layout.simple_spinner_item, ratingSpinnerArray);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         ratingSpinner.setAdapter(adapter2);
+
         ArrayAdapter<String> adapter3 = new ArrayAdapter<String>(getContext(),
                 android.R.layout.simple_spinner_item, statusSpinnerArray);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         statusSpinner.setAdapter(adapter3);
 
-        ArrayAdapter<String> adapter4 = new ArrayAdapter<String>(getContext(),
-                android.R.layout.simple_spinner_item, buildingSpinnerArray);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        final ArrayAdapter<BuildingItem> adapter4 = new ArrayAdapter<>(getContext(),
+                android.R.layout.simple_spinner_item, buildingDetails);
+        adapter4.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         buildingSpinner.setAdapter(adapter4);
+        buildingSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                // get the building id
+                selectedBuildingId = buildingDetails.get(i).getId();
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
 
         final DatePickerDialog.OnDateSetListener mDate = new DatePickerDialog.OnDateSetListener(){
             @Override
@@ -478,7 +539,6 @@ public class BuildingFragment extends Fragment {
                         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
                         JSONObject object = new JSONObject();
                         try {
-                            //input your API parameters
                             object.put("extinguisher_make", makeEditText.getText().toString());
                             object.put("extinguisher_serialnumber",serialNumberEditText.getText().toString());
                             object.put("extinguisher_barcodenumber",barcodeEditText.getText().toString());
@@ -493,17 +553,60 @@ public class BuildingFragment extends Fragment {
                             object.put("extinguisher_status",statusSpinner.getSelectedItem().toString());
                             object.put("extinguisher_comment",commentEditText.getText().toString());
                             object.put("extinguisher_photourl","photo");
-                            object.put("building_id",7);
+                            object.put("building_id", selectedBuildingId);
+
+
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                         // Enter the correct url for your api service site
-                        String url = "https://alin.scweb.ca/SanalAPI/api/extinguisher?building_id=6";
+                        String url = "https://alin.scweb.ca/SanalAPI/api/extinguisher?building_id=48";
                         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, object,
                                 new Response.Listener<JSONObject>() {
                                     @Override
                                     public void onResponse(JSONObject response) {
                                         Toast.makeText(getContext(), "Extinguisher Created!", Toast.LENGTH_LONG).show();
+                                        //Todo: hashmap
+
+                                        JSONObject jsonResponse = null;
+                                        try {
+                                            jsonResponse = response.getJSONObject("data");
+                                            Long id = jsonResponse.getLong("id");
+
+                                            ExtinguisherItem extinguisherItem = new ExtinguisherItem(id, makeEditText.getText().toString(),
+                                                    serialNumberEditText.getText().toString(),
+                                                    barcodeEditText.getText().toString(),
+                                                    areaEditText.getText().toString(),
+                                                    locationEditText.getText().toString(),
+                                                    typeSpinner.getSelectedItem().toString(),
+                                                    ratingSpinner.getSelectedItem().toString(),
+                                                    mDateEditText.getText().toString(),
+                                                    hDateEditText.getText().toString(),
+                                                    sDateEditText.getText().toString(),
+                                                    nSDateEditText.getText().toString(),
+                                                    statusSpinner.getSelectedItem().toString(),
+                                                    commentEditText.getText().toString(),
+                                                    "photo");
+
+                                            //create array
+                                            List<ExtinguisherItem> buildingExtinguisher = new ArrayList<>();
+                                            buildingExtinguisher.add(extinguisherItem);
+
+                                            buildingIdExtinguisher.put(selectedBuildingId, buildingExtinguisher);
+
+                                            expandableListAdapter.notifyDataSetChanged();
+
+
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+
+
+
+
+
+
                                     }
                                 }, new Response.ErrorListener() {
                             @Override
@@ -531,17 +634,6 @@ public class BuildingFragment extends Fragment {
         alertDialog.setView(dialogView);
         alertDialog.show();
     }
-
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//
-//        if (requestCode == 7 && resultCode == RESULT_OK) {
-//
-//            Bitmap bitmap = (Bitmap) data.getExtras().get("data");
-//
-//            extinguisherImageView.setImageBitmap(bitmap);
-//            extinguisherImageView.setRotation(90);
-//        }
-//    }
 
     public void pdfDialogBox() {
         final View dialogView = View.inflate(getContext(),R.layout.generate_pdf,null);
