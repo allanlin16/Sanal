@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:id="@+id/addClient">
+    android:id="@+id/editClient">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,8 +16,8 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Name"
-                android:id="@+id/addName">
+                android:hint="Edit Building Name"
+                android:id="@+id/editBuildingName">
             </com.google.android.material.textfield.TextInputEditText>
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -34,8 +34,8 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Email"
-                android:id="@+id/addAddress">
+                android:hint="Edit Building Address"
+                android:id="@+id/editBuildingAddress">
 
             </com.google.android.material.textfield.TextInputEditText>
 
@@ -53,8 +53,8 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Password"
-                android:id="@+id/addPhone">
+                android:hint="Edit Building City"
+                android:id="@+id/editBuildingCity">
 
             </com.google.android.material.textfield.TextInputEditText>
         </com.google.android.material.textfield.TextInputLayout>
@@ -72,8 +72,8 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Confirm Password"
-                android:id="@+id/addEmail">
+                android:hint="Edit Building Postal Code"
+                android:id="@+id/editBuildingPostalCode">
 
             </com.google.android.material.textfield.TextInputEditText>
         </com.google.android.material.textfield.TextInputLayout>/

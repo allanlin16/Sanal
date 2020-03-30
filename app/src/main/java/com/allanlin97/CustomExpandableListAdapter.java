@@ -1,16 +1,29 @@
 package com.allanlin97;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Typeface;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,19 +31,19 @@ import java.util.List;
 public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
 
     private Context context;
-    private List<String> expandableListTitle;
-    private HashMap<String, List<String>> expandableListDetail;
+    private List<BuildingItem> buildingDetails;
+    private HashMap<Long, List<ExtinguisherItem>> buildingIdExtinguisher;
 
-    public CustomExpandableListAdapter(Context context, List<String> expandableListTitle,
-                                       HashMap<String, List<String>> expandableListDetail) {
+    public CustomExpandableListAdapter(Context context, List<BuildingItem> buildingDetails,
+                                       HashMap<Long, List<ExtinguisherItem>> buildingIdExtinguisher) {
         this.context = context;
-        this.expandableListTitle = expandableListTitle;
-        this.expandableListDetail = expandableListDetail;
+        this.buildingDetails = buildingDetails;
+        this.buildingIdExtinguisher = buildingIdExtinguisher;
     }
 
     @Override
     public Object getChild(int listPosition, int expandedListPosition) {
-        return this.expandableListDetail.get(this.expandableListTitle.get(listPosition))
+        return this.buildingIdExtinguisher.get(Long.valueOf(this.buildingDetails.get(listPosition).getId()))
                 .get(expandedListPosition);
     }
 
@@ -42,14 +55,18 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getChildView(int listPosition, final int expandedListPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
-        final String expandedListText = (String) getChild(listPosition, expandedListPosition);
+        final ExtinguisherItem expandedListText = (ExtinguisherItem) getChild(listPosition, expandedListPosition);
         if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater) this.context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = layoutInflater.inflate(R.layout.list_item, null);
         }
         TextView expandedListTextView = convertView.findViewById(R.id.expandedListItem);
-        expandedListTextView.setText(expandedListText);
+        expandedListTextView.setText(expandedListText.getSerialNumber());
+
+
+
+
 
         return convertView;
     }
@@ -57,34 +74,44 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int listPosition) {
-        System.out.println(this.expandableListDetail);
-        return this.expandableListDetail.get(this.expandableListTitle.get(listPosition)).size();
+        return this.buildingIdExtinguisher.get(Long.valueOf(this.buildingDetails.get(listPosition).getId())).size();
     }
 
     @Override
     public Object getGroup(int listPosition) {
-        return this.expandableListTitle.get(listPosition);
+        return this.buildingDetails.get(listPosition);
     }
 
     @Override
     public int getGroupCount() {
-        return this.expandableListTitle.size();
+        return this.buildingDetails.size();
     }
 
     @Override
-    public long getGroupId(int listPosition) {
+    public long getGroupId(int listPosition)  {
         return listPosition;
     }
 
     @Override
-    public View getGroupView(int listPosition, boolean isExpanded,
+    public View getGroupView(final int listPosition, boolean isExpanded,
                              View convertView, final ViewGroup parent) {
-        String listTitle = (String) getGroup(listPosition);
+
+        buildingDetails.get(listPosition).getBuildingName();
+        buildingDetails.get(listPosition).getBuildingAddress();
+        buildingDetails.get(listPosition).getBuildingCity();
+        buildingDetails.get(listPosition).getBuildingPostalCode();
+
+        String buildingD = buildingDetails.get(listPosition).getBuildingName() + " " +
+                buildingDetails.get(listPosition).getBuildingAddress() + " " +
+                buildingDetails.get(listPosition).getBuildingCity()+ " " +
+                buildingDetails.get(listPosition).getBuildingPostalCode();
+
+        //buildingD = (String) getGroup(listPosition);
         if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = layoutInflater.inflate(R.layout.list_group, null);
         }
-        TextView listTitleTextView = (TextView) convertView.findViewById(R.id.listTitle);
+        TextView listTitleTextView = convertView.findViewById(R.id.listTitle);
         ImageView buildingEdit = convertView.findViewById(R.id.buildingMenuButton);
         buildingEdit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,10 +128,90 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
                         switch (item.getItemId()) {
                             case R.id.edit:
 
+                                final View dialogView = View.inflate(parent.getContext(),R.layout.update_building,null);
+                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(parent.getContext());
+                                alertDialogBuilder.setMessage("Update Building");
+
+                                // set up the edit text
+                                final EditText buildingName =  dialogView.findViewById(R.id.editBuildingName);
+                                final EditText buildingAddress = dialogView.findViewById(R.id.editBuildingAddress);
+                                final EditText buildingCity =  dialogView.findViewById(R.id.editBuildingCity);
+                                final EditText buildingPostalCode =  dialogView.findViewById(R.id.editBuildingPostalCode);
+
+
+                                alertDialogBuilder.setPositiveButton("Update",
+                                        new DialogInterface.OnClickListener() {
+
+                                            @Override
+                                            public void onClick(DialogInterface arg0, int arg1) {
+
+                                                RequestQueue requestQueue = Volley.newRequestQueue(parent.getContext());
+                                                JSONObject object = new JSONObject();
+                                                try {
+                                                    //input your API parameters
+                                                    object.put("building_name", buildingName.getText().toString());
+                                                    object.put("building_address", buildingAddress.getText().toString());
+                                                    object.put("building_city", buildingCity.getText().toString());
+                                                    object.put("building_postalcode", buildingPostalCode.getText().toString());
+                                                    object.put("user_id",6);
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+                                                // Enter the correct url for your api service site
+                                                String url = "https://alin.scweb.ca/SanalAPI/api/building/"+buildingDetails.get(listPosition).getId();
+                                                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, object,
+                                                        new Response.Listener<JSONObject>() {
+                                                            @Override
+                                                            public void onResponse(JSONObject response) {
+                                                                Toast.makeText(parent.getContext(), "Building Updated!", Toast.LENGTH_LONG).show();
+                                                                //TODO: update the expanablelistview
+                                                            }
+                                                        }, new Response.ErrorListener() {
+                                                    @Override
+                                                    public void onErrorResponse(VolleyError error) {
+                                                        error.printStackTrace();
+                                                    }
+                                                });
+                                                requestQueue.add(jsonObjectRequest);
+
+                                            }
+                                        });
+
+                                alertDialogBuilder.setNegativeButton("Cancel",
+                                        new DialogInterface.OnClickListener() {
+
+                                            @Override
+                                            public void onClick(DialogInterface arg0, int arg1) {
+
+                                            }
+                                        });
+
+
+                                AlertDialog alertDialog = alertDialogBuilder.create();
+                                alertDialog.setView(dialogView);
+                                alertDialog.show();
+
 
                                 break;
 
                             case R.id.delete:
+                                RequestQueue requestQueue = Volley.newRequestQueue(parent.getContext());
+                                JSONObject object = new JSONObject();
+                                // TODO: remove from adapter expandableListTitle.removeAll();
+                                String url = "https://alin.scweb.ca/SanalAPI/api/building/"+buildingDetails.get(listPosition).getId();
+                                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, url, object,
+                                        new Response.Listener<JSONObject>() {
+                                            @Override
+                                            public void onResponse(JSONObject response) {
+
+                                            }
+                                        }, new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        error.printStackTrace();
+                                    }
+                                });
+                                requestQueue.add(jsonObjectRequest);
 
                                 break;
 
@@ -119,7 +226,7 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
             }
         });
         listTitleTextView.setTypeface(null, Typeface.BOLD);
-        listTitleTextView.setText(listTitle);
+        listTitleTextView.setText(buildingD);
         return convertView;
     }
 
