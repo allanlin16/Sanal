@@ -55,6 +55,7 @@ public class ExtinguisherFragment extends Fragment {
     public  static final int RequestPermissionCode  = 1 ;
     Spinner type, rating, status;
     RequestQueue requestQueue;
+    long extinguisher_id;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         extinguisherViewModel = ViewModelProviders.of(this).get(ExtinguisherViewModel.class);
@@ -66,6 +67,12 @@ public class ExtinguisherFragment extends Fragment {
 //                textView.setText(s);
 //            }
 //        });
+
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            extinguisher_id = bundle.getLong("extinguisher_id");
+
+        }
 
         requestQueue = Volley.newRequestQueue(getContext());
 
@@ -149,12 +156,12 @@ public class ExtinguisherFragment extends Fragment {
                     object.put("extinguisher_comment", commentEditText.getText().toString());
                     object.put("extinguisher_status", status.getSelectedItem().toString());
                     object.put("extinguisher_photourl", "gg");
-                    object.put("building_id",6);
+                    //object.put("building_id",6);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 // Enter the correct url for your api service site
-                String url = "https://alin.scweb.ca/SanalAPI/api/extinguisher/9";
+                String url = "https://alin.scweb.ca/SanalAPI/api/extinguisher/"+extinguisher_id;
                 JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, object,
                         new Response.Listener<JSONObject>() {
                             @Override
@@ -267,55 +274,53 @@ public class ExtinguisherFragment extends Fragment {
 
 
         // GET request for getting the extinguisher
-        String url = "https://alin.scweb.ca/SanalAPI/api/extinguisher?building_id=6";
+        String url = "https://alin.scweb.ca/SanalAPI/api/extinguisher/"+extinguisher_id;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 
                     @Override
                     public void onResponse(JSONObject response) {
+
+                        JSONObject jsonResponse = null;
                         try {
-                            JSONArray jsonArray = response.getJSONArray("data");
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                JSONObject extinguisher = jsonArray.getJSONObject(i);
+                            jsonResponse = response.getJSONObject("data");
+                            Long id = jsonResponse.getLong("id");
+                            String make = jsonResponse.getString("extinguisher_make");
+                            String serialNumber = jsonResponse.getString("extinguisher_serialnumber");
+                            String barcode = jsonResponse.getString("extinguisher_barcodenumber");
+                            String area = jsonResponse.getString("extinguisher_locationarea");
+                            String location = jsonResponse.getString("extinguisher_locationdescription");
+                            String typeValue = jsonResponse.getString("extinguisher_type");
+                            String ratingValue = jsonResponse.getString("extinguisher_rating");
+                            String mDate = jsonResponse.getString("extinguisher_manufacturedate");
+                            String hDate = jsonResponse.getString("extinguisher_htestdate");
+                            String sDate = jsonResponse.getString("extinguisher_servicedate");
+                            String nSDate = jsonResponse.getString("extinguisher_nextservicedate");
+                            String statusValue = jsonResponse.getString("extinguisher_status");
+                            String comment = jsonResponse.getString("extinguisher_comment");
+                            String photoUrl = jsonResponse.getString("extinguisher_photourl");
 
-                                //Long id = extinguisher.getLong("id");
-                                String make = extinguisher.getString("extinguisher_make");
-                                String serialNumber = extinguisher.getString("extinguisher_serialnumber");
-                                String barcode = extinguisher.getString("extinguisher_barcodenumber");
-                                String area = extinguisher.getString("extinguisher_locationarea");
-                                String location = extinguisher.getString("extinguisher_locationdescription");
-                                String typeValue = extinguisher.getString("extinguisher_type");
-                                String ratingValue = extinguisher.getString("extinguisher_rating");
-                                String mDate = extinguisher.getString("extinguisher_manufacturedate");
-                                String hDate = extinguisher.getString("extinguisher_htestdate");
-                                String sDate = extinguisher.getString("extinguisher_servicedate");
-                                String nSDate = extinguisher.getString("extinguisher_nextservicedate");
-                                String statusValue = extinguisher.getString("extinguisher_status");
-                                String comment = extinguisher.getString("extinguisher_comment");
-                                String photoUrl = extinguisher.getString("extinguisher_photourl");
-
-                                makeEditText.setText(make);
-                                serialNumberEditText.setText(serialNumber);
-                                barcodeEditText.setText(barcode);
-                                areaEditText.setText(area);
-                                locationEditText.setText(location);
-                                int hold = adapter.getPosition(typeValue);//finding value in spinner list
-                                type.setSelection(hold);//setting spinner
-                                int hold2 = adapter2.getPosition(ratingValue);
-                                rating.setSelection(hold2);
-                                mDateEditText.setText(mDate);
-                                hDateEditText.setText(hDate);
-                                sDateEditText.setText(sDate);
-                                nSDateEditText.setText(nSDate);
-                                int hold3 = adapter3.getPosition(statusValue);
-                                status.setSelection(hold3);
-                                commentEditText.setText(comment);
-
-                            }
+                            makeEditText.setText(make);
+                            serialNumberEditText.setText(serialNumber);
+                            barcodeEditText.setText(barcode);
+                            areaEditText.setText(area);
+                            locationEditText.setText(location);
+                            int hold = adapter.getPosition(typeValue);//finding value in spinner list
+                            type.setSelection(hold);//setting spinner
+                            int hold2 = adapter2.getPosition(ratingValue);
+                            rating.setSelection(hold2);
+                            mDateEditText.setText(mDate);
+                            hDateEditText.setText(hDate);
+                            sDateEditText.setText(sDate);
+                            nSDateEditText.setText(nSDate);
+                            int hold3 = adapter3.getPosition(statusValue);
+                            status.setSelection(hold3);
+                            commentEditText.setText(comment);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+
                     }
                 }, new Response.ErrorListener() {
 

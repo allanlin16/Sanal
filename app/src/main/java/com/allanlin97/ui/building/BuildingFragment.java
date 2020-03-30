@@ -67,6 +67,7 @@ public class BuildingFragment extends Fragment {
     RequestQueue requestQueue;
     Bundle bundle;
     long selectedBuildingId;
+    ExtinguisherItem extinguisherItem;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -114,7 +115,7 @@ public class BuildingFragment extends Fragment {
         expandableListView = root.findViewById(R.id.expandableListView);
         //expandableListDetail = ExpandableListViewData.getData();
 
-        List<BuildingItem> buildingItems = new ArrayList<>();
+        final List<BuildingItem> buildingItems = new ArrayList<>();
 
 
         buildingDetails = new ArrayList(buildingItems);
@@ -158,7 +159,7 @@ public class BuildingFragment extends Fragment {
                                     // add the building object
                                     buildingDetails.add(buildingItem);
 
-                                    String extinguisherUrl ="https://alin.scweb.ca/SanalAPI/api/extinguisher?building_id="+ id;
+                                    String extinguisherUrl ="https://alin.scweb.ca/SanalAPI/api/extinguisher?building_id="+id;
 
                                     // Formulate the request and handle the response.
                                     JsonObjectRequest extinguisherRequest = new JsonObjectRequest(Request.Method.GET, extinguisherUrl, null,
@@ -232,6 +233,13 @@ public class BuildingFragment extends Fragment {
 
                 AppCompatActivity activity = (AppCompatActivity) v.getContext();
                 ExtinguisherFragment myFragment = new ExtinguisherFragment();
+
+                Bundle bundle = new Bundle();
+                long buildingId = buildingDetails.get(groupPosition).getId();
+                List<ExtinguisherItem> eItems = buildingIdExtinguisher.get(Long.valueOf(buildingId));
+                bundle.putLong("extinguisher_id", eItems.get(childPosition).getId());
+                myFragment.setArguments(bundle);
+
                 activity.getSupportFragmentManager().beginTransaction()
                         .replace(R.id.nav_host_fragment, myFragment)
                         .addToBackStack(null).commit();
@@ -284,40 +292,15 @@ public class BuildingFragment extends Fragment {
                                     @Override
                                     public void onResponse(JSONObject response) {
                                         Toast.makeText(getContext(), "Building Created!", Toast.LENGTH_LONG).show();
-                                        JSONObject jsonResponse = null;
-                                        try {
-                                            jsonResponse = response.getJSONObject("data");
-                                            Long id = jsonResponse.getLong("id");
-
-                                            BuildingItem buildingItem = new BuildingItem(id, buildingName.getText().toString(),
-                                                    buildingAddress.getText().toString(), buildingCity.getText().toString(),
-                                                    buildingPostalCode.getText().toString());
-
-
-//                                            List<ExtinguisherItem> buildingExtinguisher = new ArrayList<>();
-//
-//
-//                                            ExtinguisherItem extinguisherItem = new ExtinguisherItem( 2, "String make", "uiui", "String barcodeNumber",
-//                                                    "String area", "String description", "Water", "A",
-//                                                    new Date(2017,10,22), new Date(2017,10,22), new Date(2017,10,22), new Date(2017,10,22),
-//                                                    "String comment", "String status", "String photo");
-//
-//                                            buildingExtinguisher.add(extinguisherItem);
-//                                            buildingIdExtinguisher.put(buildingItem.getId(), buildingExtinguisher);
-                                            expandableListAdapter.notifyDataSetChanged();
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
-
                                     }
                                 }, new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
                                 error.printStackTrace();
                             }
+
                         });
                         requestQueue.add(jsonObjectRequest);
-;
 
                     }
                 });
@@ -571,10 +554,11 @@ public class BuildingFragment extends Fragment {
 
                                         JSONObject jsonResponse = null;
                                         try {
+
                                             jsonResponse = response.getJSONObject("data");
                                             Long id = jsonResponse.getLong("id");
 
-                                            ExtinguisherItem extinguisherItem = new ExtinguisherItem(id, makeEditText.getText().toString(),
+                                            extinguisherItem = new ExtinguisherItem(id, makeEditText.getText().toString(),
                                                     serialNumberEditText.getText().toString(),
                                                     barcodeEditText.getText().toString(),
                                                     areaEditText.getText().toString(),
@@ -597,16 +581,9 @@ public class BuildingFragment extends Fragment {
 
                                             expandableListAdapter.notifyDataSetChanged();
 
-
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         }
-
-
-
-
-
-
                                     }
                                 }, new Response.ErrorListener() {
                             @Override
@@ -642,16 +619,24 @@ public class BuildingFragment extends Fragment {
 
         Spinner buildingPDFSPinner = dialogView.findViewById(R.id.buildingPDFSpinner);
 
-        String[] statusSpinnerArray = new String[] {
-                "Building 1", "Building 2"
-        };
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
-                android.R.layout.simple_spinner_item, statusSpinnerArray);
+
+        ArrayAdapter<BuildingItem> adapter = new ArrayAdapter<>(getContext(),
+                android.R.layout.simple_spinner_item, buildingDetails);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         buildingPDFSPinner.setAdapter(adapter);
 
+        buildingPDFSPinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                selectedBuildingId = buildingDetails.get(i).getId();
+            }
 
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
         alertDialogBuilder.setPositiveButton("Create",
                 new DialogInterface.OnClickListener() {
 
