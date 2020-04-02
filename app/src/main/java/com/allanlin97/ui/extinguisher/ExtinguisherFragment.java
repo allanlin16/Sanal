@@ -156,7 +156,6 @@ public class ExtinguisherFragment extends Fragment {
                     object.put("extinguisher_comment", commentEditText.getText().toString());
                     object.put("extinguisher_status", status.getSelectedItem().toString());
                     object.put("extinguisher_photourl", "gg");
-                    //object.put("building_id",6);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

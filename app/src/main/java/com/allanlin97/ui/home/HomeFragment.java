@@ -91,6 +91,9 @@ public class HomeFragment extends Fragment {
     }
 
     private void jsonParse() {
+        // local - http://api.sanalapi.test/api/client?user_id=10
+        // scweb - https://alin.scweb.ca/SanalAPI/api/client?user_id=7
+
         String url = "https://alin.scweb.ca/SanalAPI/api/client?user_id=7";
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
@@ -162,6 +165,8 @@ public class HomeFragment extends Fragment {
                             e.printStackTrace();
                         }
                         // Enter the correct url for your api service site
+                        //local http://api.sanalapi.test/api/client?user_id=10
+                        // scweb = https://alin.scweb.ca/SanalAPI/api/client?user_id=7
                         String url = "https://alin.scweb.ca/SanalAPI/api/client?user_id=7";
                         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, object,
                                 new Response.Listener<JSONObject>() {
