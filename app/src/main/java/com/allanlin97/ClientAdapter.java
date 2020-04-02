@@ -95,7 +95,6 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
                                                         object.put("client_address",address.getText().toString());
                                                         object.put("client_phone",phone.getText().toString());
                                                         object.put("client_email",email.getText().toString());
-                                                        object.put("user_id",7);
                                                     } catch (JSONException e) {
                                                         e.printStackTrace();
                                                     }

@@ -61,7 +61,7 @@ public class BuildingItem {
     @NonNull
     @Override
     public String toString() {
-        return this.buildingName + " " + this.id;
+        return this.buildingName;
     }
 
 }

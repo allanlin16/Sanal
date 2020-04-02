@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -37,14 +39,27 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 import com.github.clans.fab.FloatingActionButton;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -67,6 +82,7 @@ public class BuildingFragment extends Fragment {
     RequestQueue requestQueue;
     Bundle bundle;
     long selectedBuildingId;
+    String selectedBuildingName, selectedBuildingAddress, selectedBuildingPostalCode, getSelectedBuildingCity;
     ExtinguisherItem extinguisherItem;
 
 
@@ -512,8 +528,6 @@ public class BuildingFragment extends Fragment {
             }
         });
 
-
-
         alertDialogBuilder.setPositiveButton("Create",
                 new DialogInterface.OnClickListener() {
 
@@ -537,8 +551,6 @@ public class BuildingFragment extends Fragment {
                             object.put("extinguisher_comment",commentEditText.getText().toString());
                             object.put("extinguisher_photourl","photo");
                             object.put("building_id", selectedBuildingId);
-
-
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -630,6 +642,10 @@ public class BuildingFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 selectedBuildingId = buildingDetails.get(i).getId();
+                selectedBuildingName = buildingDetails.get(i).getBuildingName();
+                selectedBuildingAddress = buildingDetails.get(i).getBuildingAddress();
+                selectedBuildingPostalCode = buildingDetails.get(i).getBuildingPostalCode();
+                getSelectedBuildingCity = buildingDetails.get(i).getBuildingCity();
             }
 
             @Override
@@ -643,8 +659,104 @@ public class BuildingFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
 
+                        // GET request for getting the extinguisher
+                        String url = "https://alin.scweb.ca/SanalAPI/api/extinguisher?building_id="+selectedBuildingId;
 
-                        System.out.println("hi");
+                        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+
+                                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        try {
+                                            JSONArray jsonArray = response.getJSONArray("data");
+
+                                            //get current date and time for file extenstion
+                                            SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.US);
+                                            Date now = new Date();
+
+                                            // Create PDF File
+                                            String pdfname = selectedBuildingName+formatter.format(now)+".pdf";
+                                            System.out.println(pdfname);
+                                            File file = new File(getContext().getExternalCacheDir(), pdfname);
+                                            // Setup output
+                                            OutputStream output = new FileOutputStream(file);
+                                            Document document = new Document(PageSize.A4);
+                                            PdfPTable table = new PdfPTable(new float[]{3, 3, 3, 3, 3, 3});
+                                            table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
+                                            table.getDefaultCell().setFixedHeight(50);
+                                            table.setTotalWidth(PageSize.A4.getWidth());
+                                            table.setWidthPercentage(100);
+                                            table.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
+                                            table.addCell("Make");
+                                            table.addCell("Serial Number");
+                                            table.addCell("Area");
+                                            table.addCell("Location");
+                                            table.addCell("Service Date");
+                                            table.addCell("Status");
+                                            table.setHeaderRows(1);
+                                            PdfPCell[] cells = table.getRow(0).getCells();
+                                            for (int j = 0; j < cells.length; j++) {
+                                                cells[j].setBackgroundColor(BaseColor.GRAY);
+                                            }
+
+                                            for (int i = 0; i < jsonArray.length(); i++) {
+
+                                                JSONObject extinguisher = jsonArray.getJSONObject(i);
+                                                Long id = extinguisher.getLong("id");
+                                                String make = extinguisher.getString("extinguisher_make");
+                                                String serialNumber = extinguisher.getString("extinguisher_serialnumber");
+                                                String barcode = extinguisher.getString("extinguisher_barcodenumber");
+                                                String area = extinguisher.getString("extinguisher_locationarea");
+                                                String location = extinguisher.getString("extinguisher_locationdescription");
+                                                String typeValue = extinguisher.getString("extinguisher_type");
+                                                String ratingValue = extinguisher.getString("extinguisher_rating");
+                                                String mDate = extinguisher.getString("extinguisher_manufacturedate");
+                                                String hDate = extinguisher.getString("extinguisher_htestdate");
+                                                String sDate = extinguisher.getString("extinguisher_servicedate");
+                                                String nSDate = extinguisher.getString("extinguisher_nextservicedate");
+                                                String statusValue = extinguisher.getString("extinguisher_status");
+                                                String comment = extinguisher.getString("extinguisher_comment");
+                                                String photoUrl = extinguisher.getString("extinguisher_photourl");
+
+
+                                                table.addCell(make);
+                                                table.addCell(area);
+                                                table.addCell(serialNumber);
+                                                table.addCell(location);
+                                                table.addCell(nSDate);
+                                                table.addCell(statusValue);
+                                            }
+
+                                            PdfWriter.getInstance(document, output);
+                                            document.open();
+                                            Font f = new Font(Font.FontFamily.TIMES_ROMAN, 20.0f, Font.UNDERLINE, BaseColor.BLACK);
+                                            Font g = new Font(Font.FontFamily.TIMES_ROMAN, 15.0f, Font.NORMAL, BaseColor.BLACK);
+                                            document.add(new Paragraph("Extinguisher Report for: \n", f));
+                                            document.add(new Paragraph(selectedBuildingName+ "\n" +
+                                                    selectedBuildingAddress + "\n" +
+                                                    selectedBuildingPostalCode + "\n" +
+                                                    getSelectedBuildingCity + "\n\n" , g));
+                                            document.add(table);
+
+                                            document.close();
+
+                                            Toast.makeText(getContext(), "PDF Created!", Toast.LENGTH_LONG).show();
+
+                                        } catch (JSONException | FileNotFoundException | DocumentException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }, new Response.ErrorListener() {
+
+
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        // TODO: Handle error
+                                        error.printStackTrace();
+                                    }
+                                });
+                        requestQueue.add(jsonObjectRequest);
 
                     }
                 });
@@ -663,6 +775,4 @@ public class BuildingFragment extends Fragment {
         alertDialog.show();
 
     }
-
-
 }

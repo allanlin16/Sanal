@@ -153,7 +153,6 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
                                                     object.put("building_address", buildingAddress.getText().toString());
                                                     object.put("building_city", buildingCity.getText().toString());
                                                     object.put("building_postalcode", buildingPostalCode.getText().toString());
-                                                    object.put("user_id",6);
                                                 } catch (JSONException e) {
                                                     e.printStackTrace();
                                                 }
