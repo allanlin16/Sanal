@@ -121,12 +121,49 @@ public class LoginInActivity extends AppCompatActivity {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder.setMessage("Register for Account");
 
+        // set up the edit text
+        final EditText name = dialogView.findViewById(R.id.registerName);
+        final EditText email = dialogView.findViewById(R.id.registerEmail);
+        final EditText password = dialogView.findViewById(R.id.registerPassword);
+        final EditText confirmPassword = dialogView.findViewById(R.id.registerConfirmPassword);
+
 
         alertDialogBuilder.setPositiveButton("Register",
                 new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
+
+                        String url = "https://alin.scweb.ca/SanalAPI/api/auth/signup";
+                        StringRequest postRequest = new StringRequest(Request.Method.POST, url,
+                                new Response.Listener<String>()
+                                {
+                                    @Override
+                                    public void onResponse(String response) {
+
+                                    }
+                                },
+                                new Response.ErrorListener()
+                                {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        //Error toast message
+
+                                    }
+                                }
+                        ) {
+                            @Override
+                            protected Map<String, String> getParams()
+                            {
+                                Map<String, String>  params = new HashMap<>();
+                                params.put("name", name.getText().toString());
+                                params.put("email", email.getText().toString());
+                                params.put("password", password.getText().toString());
+                                params.put("password_confirmation", confirmPassword.getText().toString());
+                                return params;
+                            }
+                        };
+                        requestQueue.add(postRequest);
 
 
                     }
