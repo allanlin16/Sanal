@@ -68,6 +68,7 @@ public class ExtinguisherFragment extends Fragment {
 //            }
 //        });
 
+        // get extinguisher id from the building fragment
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             extinguisher_id = bundle.getLong("extinguisher_id");

@@ -12,29 +12,31 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Please select building"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:text="Please select building" />
 
         <Spinner
             android:id="@+id/selectBuildingSpinner"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
+
 
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1">
+
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/addMakeEditText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/addMakeEditText"
                 android:layout_weight="1"
                 android:hint="@string/extinguisherMake"
                 android:inputType="text|textCapWords" />
@@ -45,10 +47,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1">
+
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/addSerialNumberEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/addSerialNumberEditText"
                 android:layout_weight="1"
                 android:hint="@string/extinguisherSerialNumber"
                 android:inputType="text|textCapWords" />
@@ -57,81 +60,84 @@
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1">
+
             <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:id="@+id/addBarcodeEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="@string/extinguisherBarcode"/>
+                android:hint="@string/extinguisherBarcode" />
         </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1">
+
             <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:id="@+id/addAreaEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="@string/extinguisherArea"/>
+                android:hint="@string/extinguisherArea" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1">
+
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/addLocationEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/addLocationEditText"
                 android:layout_weight="1"
-                android:hint="@string/extinguisherLocation"/>
+                android:hint="@string/extinguisherLocation" />
         </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <TextView
-            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="@string/extinguisherType" />
 
-
         <Spinner
+            android:id="@+id/addTypeSpinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/addTypeSpinner"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
         <TextView
-            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="@string/extinguisherRating" />
 
+
         <Spinner
+            android:id="@+id/addRatingSpinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/addRatingSpinner"
             android:layout_weight="1" />
 
     </LinearLayout>
@@ -147,25 +153,26 @@
             android:layout_weight="1">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/addMDateEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/addMDateEditText"
-                android:clickable="true"
                 android:layout_weight="1"
-                android:hint="@string/extinguisherMDate"/>
+                android:clickable="true"
+                android:hint="@string/extinguisherMDate" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1">
+
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/addHDateEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/addHDateEditText"
-                android:clickable="true"
                 android:layout_weight="1"
-                android:hint="@string/extinguisherHDate"/>
+                android:clickable="true"
+                android:hint="@string/extinguisherHDate" />
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
@@ -179,26 +186,28 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1">
+
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/addSDateEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/addSDateEditText"
+                android:layout_weight="1"
                 android:clickable="true"
-                android:hint="@string/extinguisherSDate"
-                android:layout_weight="1"/>
+                android:hint="@string/extinguisherSDate" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1">
+
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/addNSDateEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/addNSDateEditText"
+                android:layout_weight="1"
                 android:clickable="true"
-                android:hint="@string/extinguisherNSDate"
-                android:layout_weight="1"/>
+                android:hint="@string/extinguisherNSDate" />
         </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
@@ -207,17 +216,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/extinguisherStatus"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/extinguisherStatus" />
 
         <Spinner
             android:id="@+id/addStatusSpinner"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"/>
 
-        </Spinner>
 
     </LinearLayout>
 
@@ -229,11 +238,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1">
+
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/addCommentEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/addCommentEditText"
-                android:hint="Comments"/>
+                android:hint="Comments" />
         </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
@@ -241,25 +251,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <Button
-            android:id="@+id/addPhotoButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Take Photo"
-            android:layout_gravity="center">
-        </Button>
-
-        <ImageView
-            android:id="@+id/addExtinguisherImageView"
-            android:layout_height="150dp"
-            android:layout_width="150dp"
-            android:layout_gravity="center">
-
-        </ImageView>
-
-
-    </LinearLayout>
+        android:orientation="vertical" />
 
 </LinearLayout>

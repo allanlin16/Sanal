@@ -196,6 +196,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
         clientList = ClientList;
     }
 
+    //
     public void removeAt(int position) {
         clientList.remove(position);
         notifyItemRemoved(position);

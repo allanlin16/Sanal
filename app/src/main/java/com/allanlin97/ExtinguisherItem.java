@@ -1,7 +1,5 @@
 package com.allanlin97;
 
-import java.util.Date;
-
 public class ExtinguisherItem {
     private long id;
     private String make;

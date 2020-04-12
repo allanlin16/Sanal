@@ -54,8 +54,10 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
+        // get the acess token from the shared preferences
         SharedPreferences preferences = getActivity().getSharedPreferences("MY_APP", Context.MODE_PRIVATE);
         String retrivedToken  = preferences.getString("TOKEN",null);//second parameter default value.
+        //create a new jwt
         jwt = new JWT(retrivedToken);
 
         homeViewModel =
@@ -77,6 +79,7 @@ public class HomeFragment extends Fragment {
         // ArrayList for client info
         clientList = new ArrayList<>();
 
+        //set up the recycler view
         recyclerView = root.findViewById(R.id.clientRecyclerView);
         jsonParse();
 
@@ -85,6 +88,7 @@ public class HomeFragment extends Fragment {
         layoutManager = new LinearLayoutManager(getContext());
         adapter = new ClientAdapter(clientList);
         recyclerView.setLayoutManager(layoutManager);
+        // add the client adapter
         recyclerView.setAdapter(adapter);
 
         final TextView textView = root.findViewById(R.id.recent_title_label);
@@ -99,10 +103,12 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
+    //
     private void jsonParse() {
         // local - http://api.sanalapi.test/api/client?user_id=10
         // scweb - https://alin.scweb.ca/SanalAPI/api/client?user_id=7
 
+        //get request for clients realted to the user subject, so id
         String url = "https://alin.scweb.ca/SanalAPI/api/client?user_id="+jwt.getSubject();
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
@@ -122,8 +128,10 @@ public class HomeFragment extends Fragment {
                                 String phone = client.getString("client_phone");
                                 String address = client.getString("client_address");
 
+                                // create a new client object and add to list
                                 clientList.add(new ClientItem(id, R.drawable.ic_more_vert_black_24dp, name, email, phone, address));
 
+                                // add it to the recycler view
                                 adapter = new ClientAdapter(clientList);
                                 recyclerView.setLayoutManager(layoutManager);
                                 recyclerView.setAdapter(adapter);
@@ -143,6 +151,7 @@ public class HomeFragment extends Fragment {
         requestQueue.add(jsonObjectRequest);
     }
 
+    // Method for adding the clients
     public void dialogBox() {
 
         final View dialogView = View.inflate(getContext(),R.layout.add_client,null);

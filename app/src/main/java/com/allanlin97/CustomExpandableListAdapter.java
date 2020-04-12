@@ -32,6 +32,7 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
 
     private Context context;
     private List<BuildingItem> buildingDetails;
+    // Hash map takes in the building id and the ExtinguisherItem
     private HashMap<Long, List<ExtinguisherItem>> buildingIdExtinguisher;
 
     public CustomExpandableListAdapter(Context context, List<BuildingItem> buildingDetails,
@@ -63,11 +64,7 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
         }
         TextView expandedListTextView = convertView.findViewById(R.id.expandedListItem);
         expandedListTextView.setText(expandedListText.getSerialNumber());
-
-
-
-
-
+        
         return convertView;
     }
 
