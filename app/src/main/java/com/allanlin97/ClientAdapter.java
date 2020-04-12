@@ -24,6 +24,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -141,14 +142,14 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
                                 case R.id.delete:
                                     Long client_id = clientList.get(getAdapterPosition()).getId();
                                     RequestQueue requestQueue = Volley.newRequestQueue(itemView.getContext());
-                                    JSONObject object = new JSONObject();
+                                    JSONArray object = new JSONArray();
                                     removeAt(getAdapterPosition());
                                     String url = "https://alin.scweb.ca/SanalAPI/api/client/"+client_id;
                                     System.out.println("deleted" + client_id);
-                                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, url, object,
-                                            new Response.Listener<JSONObject>() {
+                                    JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(Request.Method.DELETE, url, object,
+                                            new Response.Listener<JSONArray>() {
                                                 @Override
-                                                public void onResponse(JSONObject response) {
+                                                public void onResponse(JSONArray response) {
                                                     Toast.makeText(itemView.getContext(), "Client Deleted!", Toast.LENGTH_LONG).show();
                                                 }
                                             }, new Response.ErrorListener() {
@@ -196,6 +197,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
         clientList = ClientList;
     }
 
+    //
     public void removeAt(int position) {
         clientList.remove(position);
         notifyItemRemoved(position);

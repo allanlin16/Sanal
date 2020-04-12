@@ -19,9 +19,11 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -32,6 +34,7 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
 
     private Context context;
     private List<BuildingItem> buildingDetails;
+    // Hash map takes in the building id and the ExtinguisherItem
     private HashMap<Long, List<ExtinguisherItem>> buildingIdExtinguisher;
 
     public CustomExpandableListAdapter(Context context, List<BuildingItem> buildingDetails,
@@ -63,10 +66,6 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
         }
         TextView expandedListTextView = convertView.findViewById(R.id.expandedListItem);
         expandedListTextView.setText(expandedListText.getSerialNumber());
-
-
-
-
 
         return convertView;
     }
@@ -195,15 +194,17 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
 
                             case R.id.delete:
                                 RequestQueue requestQueue = Volley.newRequestQueue(parent.getContext());
-                                JSONObject object = new JSONObject();
+                                JSONArray object = new JSONArray();
                                 // TODO: remove from adapter expandableListTitle.removeAll();
                                 String url = "https://alin.scweb.ca/SanalAPI/api/building/"+buildingDetails.get(listPosition).getId();
-                                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, url, object,
-                                        new Response.Listener<JSONObject>() {
+                                JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(Request.Method.DELETE, url, object,
+                                        new Response.Listener<JSONArray>() {
                                             @Override
-                                            public void onResponse(JSONObject response) {
-
+                                            public void onResponse(JSONArray response) {
+                                                System.out.println("del");
+                                                Toast.makeText(parent.getContext(), "Building Deleted", Toast.LENGTH_LONG).show();
                                             }
+
                                         }, new Response.ErrorListener() {
                                     @Override
                                     public void onErrorResponse(VolleyError error) {
@@ -211,7 +212,6 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
                                     }
                                 });
                                 requestQueue.add(jsonObjectRequest);
-
                                 break;
 
                             default:

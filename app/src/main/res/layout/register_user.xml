@@ -2,8 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:id="@+id/addClient">
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,7 +16,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Name"
-                android:id="@+id/addName">
+                android:id="@+id/registerName">
             </com.google.android.material.textfield.TextInputEditText>
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -35,7 +34,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Email"
-                android:id="@+id/addAddress">
+                android:id="@+id/registerEmail">
 
             </com.google.android.material.textfield.TextInputEditText>
 
@@ -54,7 +53,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Password"
-                android:id="@+id/addPhone">
+                android:inputType="textPassword"
+                android:id="@+id/registerPassword">
 
             </com.google.android.material.textfield.TextInputEditText>
         </com.google.android.material.textfield.TextInputLayout>
@@ -73,7 +73,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Confirm Password"
-                android:id="@+id/addEmail">
+                android:inputType="textPassword"
+                android:id="@+id/registerConfirmPassword">
 
             </com.google.android.material.textfield.TextInputEditText>
         </com.google.android.material.textfield.TextInputLayout>/

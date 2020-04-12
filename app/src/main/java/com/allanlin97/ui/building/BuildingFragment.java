@@ -90,6 +90,7 @@ public class BuildingFragment extends Fragment {
         buildingViewModel = ViewModelProviders.of(this).get(BuildingViewModel.class);
         View root = inflater.inflate(R.layout.fragment_building, container, false);
 
+
         final TextView textView = root.findViewById(R.id.recent_title_label);
         buildingViewModel.getText().observe(this, new Observer<String>() {
             @Override
@@ -97,6 +98,8 @@ public class BuildingFragment extends Fragment {
                 textView.setText(s);
             }
         });
+
+        //
 
         requestQueue = Volley.newRequestQueue(getContext());
         addBuildingFab = root.findViewById(R.id.addBuildingFab);
@@ -152,6 +155,8 @@ public class BuildingFragment extends Fragment {
                 }
             });
 
+            // Get Request for loading the building related to the clients
+
             String url = "https://alin.scweb.ca/SanalAPI/api/building?client_id="+clientId;
 
             final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
@@ -171,10 +176,12 @@ public class BuildingFragment extends Fragment {
                                     final String building_city = building.getString("building_city");
                                     final String building_postalcode = building.getString("building_postalcode");
 
+                                    // add the building details to the building object, so we can use the getter methods later
                                     final BuildingItem buildingItem = new BuildingItem(id, building_name, building_address, building_city, building_postalcode);
                                     // add the building object
                                     buildingDetails.add(buildingItem);
 
+                                    // GET Request for extinguisher related to the building in child expanable list view
                                     String extinguisherUrl ="https://alin.scweb.ca/SanalAPI/api/extinguisher?building_id="+id;
 
                                     // Formulate the request and handle the response.
@@ -184,7 +191,9 @@ public class BuildingFragment extends Fragment {
                                                 public void onResponse(JSONObject response) {
 
                                                     try {
+                                                        //JSON Array with titled data
                                                         JSONArray jsonArray = response.getJSONArray("data");
+                                                        // create a new list
                                                         List<ExtinguisherItem> buildingExtinguisher = new ArrayList<>();
                                                         for (int i = 0; i < jsonArray.length(); i++) {
                                                             JSONObject jsonResponse = jsonArray.getJSONObject(i);
@@ -204,6 +213,7 @@ public class BuildingFragment extends Fragment {
                                                             String comment = jsonResponse.getString("extinguisher_comment");
                                                             String photoUrl = jsonResponse.getString("extinguisher_photourl");
 
+                                                            // create a new extinguisher object
                                                             ExtinguisherItem extinguisherItem = new ExtinguisherItem(id, make,
                                                                     serialNumber, barcode, area, location, typeValue, ratingValue,
                                                                     mDate, hDate, sDate, nSDate, statusValue, comment, photoUrl);
@@ -243,6 +253,7 @@ public class BuildingFragment extends Fragment {
 
         }
 
+        // expanable list view displays child list and building and extinguisher objects
         expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
@@ -280,6 +291,7 @@ public class BuildingFragment extends Fragment {
         final EditText buildingCity = dialogView.findViewById(R.id.addBuildingCity);
         final EditText buildingPostalCode = dialogView.findViewById(R.id.addBuildingPostalCode);
 
+        //Set up Post request for adding the building info
         alertDialogBuilder.setPositiveButton("Create",
                 new DialogInterface.OnClickListener() {
 
@@ -289,7 +301,7 @@ public class BuildingFragment extends Fragment {
                         final RequestQueue requestQueue = Volley.newRequestQueue(getContext());
                         JSONObject object = new JSONObject();
                         try {
-                            //input your API parameters
+                            //input API parameters from edit text
                             final long clientId = bundle.getLong("clientId");
                             object.put("building_name", buildingName.getText().toString());
                             object.put("building_address", buildingAddress.getText().toString());
@@ -317,6 +329,7 @@ public class BuildingFragment extends Fragment {
 
                         });
                         requestQueue.add(jsonObjectRequest);
+                        expandableListAdapter.notifyDataSetChanged();
 
                     }
                 });
@@ -336,6 +349,7 @@ public class BuildingFragment extends Fragment {
         alertDialog.show();
     }
 
+    // POST REQUEST for storing extinguishers
     public void extinguisherDialogBox() {
         final View dialogView = View.inflate(getContext(),R.layout.add_extinguisher,null);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
@@ -349,6 +363,7 @@ public class BuildingFragment extends Fragment {
 
         final Calendar myCalendar = Calendar.getInstance();
 
+        //array for type, rating and status variables
         String[] typeSpinnerArray = new String[] {
                 "Water", "Foam", "Dry Powder", "CO2", "Wet Chemical"
         };
@@ -361,11 +376,13 @@ public class BuildingFragment extends Fragment {
                 "Passed", "Failed"
         };
 
+        // set up the textview
         makeEditText= dialogView.findViewById(R.id.addMakeEditText);
         serialNumberEditText = dialogView.findViewById(R.id.addSerialNumberEditText);
         barcodeEditText = dialogView.findViewById(R.id.addBarcodeEditText);
         areaEditText = dialogView.findViewById(R.id.addAreaEditText);
         locationEditText = dialogView.findViewById(R.id.addLocationEditText);
+
         //Dates
         mDateEditText = dialogView.findViewById(R.id.addMDateEditText);
         hDateEditText = dialogView.findViewById(R.id.addHDateEditText);
@@ -378,8 +395,6 @@ public class BuildingFragment extends Fragment {
         statusSpinner = dialogView.findViewById(R.id.addStatusSpinner);
         buildingSpinner = dialogView.findViewById(R.id.selectBuildingSpinner);
 
-        photoButtton = dialogView.findViewById(R.id.addPhotoButton);
-        extinguisherImageView = dialogView.findViewById(R.id.addExtinguisherImageView);
 
         //set the spinner array
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
@@ -398,6 +413,7 @@ public class BuildingFragment extends Fragment {
         statusSpinner.setAdapter(adapter3);
 
 
+        //get the building id from spinner
         final ArrayAdapter<BuildingItem> adapter4 = new ArrayAdapter<>(getContext(),
                 android.R.layout.simple_spinner_item, buildingDetails);
         adapter4.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -405,7 +421,7 @@ public class BuildingFragment extends Fragment {
         buildingSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                // get the building id
+                // get the building id so we can allow the user to select which building they want to add the extinguisher
                 selectedBuildingId = buildingDetails.get(i).getId();
 
             }
@@ -416,7 +432,7 @@ public class BuildingFragment extends Fragment {
             }
         });
 
-
+        // create
         final DatePickerDialog.OnDateSetListener mDate = new DatePickerDialog.OnDateSetListener(){
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int  dayOfMonth) {
@@ -518,16 +534,7 @@ public class BuildingFragment extends Fragment {
             }
         });
 
-        photoButtton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-
-
-                startActivityForResult(intent, 7);
-            }
-        });
-
+        // POST REQUEST for the extinguisher
         alertDialogBuilder.setPositiveButton("Create",
                 new DialogInterface.OnClickListener() {
 
@@ -556,16 +563,16 @@ public class BuildingFragment extends Fragment {
                             e.printStackTrace();
                         }
                         // Enter the correct url for your api service site
-                        String url = "https://alin.scweb.ca/SanalAPI/api/extinguisher?building_id=48";
+                        String url = "https://alin.scweb.ca/SanalAPI/api/extinguisher?building_id="+selectedBuildingId;
                         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, object,
                                 new Response.Listener<JSONObject>() {
                                     @Override
                                     public void onResponse(JSONObject response) {
                                         Toast.makeText(getContext(), "Extinguisher Created!", Toast.LENGTH_LONG).show();
-                                        //Todo: hashmap
 
                                         JSONObject jsonResponse = null;
                                         try {
+                                            // GET The response and pass it to extinguisher object
 
                                             jsonResponse = response.getJSONObject("data");
                                             Long id = jsonResponse.getLong("id");
@@ -585,7 +592,7 @@ public class BuildingFragment extends Fragment {
                                                     commentEditText.getText().toString(),
                                                     "photo");
 
-                                            //create array
+                                            //create a new array list and add the new object
                                             List<ExtinguisherItem> buildingExtinguisher = new ArrayList<>();
                                             buildingExtinguisher.add(extinguisherItem);
 
@@ -638,6 +645,7 @@ public class BuildingFragment extends Fragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         buildingPDFSPinner.setAdapter(adapter);
 
+        // did the samething for the building store the building details for the pdf
         buildingPDFSPinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -659,7 +667,7 @@ public class BuildingFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
 
-                        // GET request for getting the extinguisher
+                        // GET request for getting the extinguisher related to the selected building
                         String url = "https://alin.scweb.ca/SanalAPI/api/extinguisher?building_id="+selectedBuildingId;
 
                         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
@@ -688,11 +696,12 @@ public class BuildingFragment extends Fragment {
                                             table.setTotalWidth(PageSize.A4.getWidth());
                                             table.setWidthPercentage(100);
                                             table.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
+                                            // add the column names for the pdf
                                             table.addCell("Make");
                                             table.addCell("Serial Number");
                                             table.addCell("Area");
                                             table.addCell("Location");
-                                            table.addCell("Service Date");
+                                            table.addCell("Expire Date");
                                             table.addCell("Status");
                                             table.setHeaderRows(1);
                                             PdfPCell[] cells = table.getRow(0).getCells();
@@ -719,7 +728,7 @@ public class BuildingFragment extends Fragment {
                                                 String comment = extinguisher.getString("extinguisher_comment");
                                                 String photoUrl = extinguisher.getString("extinguisher_photourl");
 
-
+                                                // display to the pdf
                                                 table.addCell(make);
                                                 table.addCell(area);
                                                 table.addCell(serialNumber);

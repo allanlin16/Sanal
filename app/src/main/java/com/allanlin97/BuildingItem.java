@@ -2,6 +2,7 @@ package com.allanlin97;
 
 import androidx.annotation.NonNull;
 
+// BuildingItem object class getters and setters
 public class BuildingItem {
 
     private long id;

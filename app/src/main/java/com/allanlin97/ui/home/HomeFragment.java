@@ -1,7 +1,9 @@
 package com.allanlin97.ui.home;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +29,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.auth0.android.jwt.JWT;
 import com.github.clans.fab.FloatingActionButton;
 
 
@@ -46,9 +49,17 @@ public class HomeFragment extends Fragment {
     FloatingActionButton addClientFab;
     ArrayList<ClientItem> clientList;
     RequestQueue requestQueue;
+    JWT jwt;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+
+        // get the acess token from the shared preferences
+        SharedPreferences preferences = getActivity().getSharedPreferences("MY_APP", Context.MODE_PRIVATE);
+        String retrivedToken  = preferences.getString("TOKEN",null);//second parameter default value.
+        //create a new jwt
+        jwt = new JWT(retrivedToken);
+
         homeViewModel =
                 ViewModelProviders.of(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
@@ -68,6 +79,7 @@ public class HomeFragment extends Fragment {
         // ArrayList for client info
         clientList = new ArrayList<>();
 
+        //set up the recycler view
         recyclerView = root.findViewById(R.id.clientRecyclerView);
         jsonParse();
 
@@ -76,6 +88,7 @@ public class HomeFragment extends Fragment {
         layoutManager = new LinearLayoutManager(getContext());
         adapter = new ClientAdapter(clientList);
         recyclerView.setLayoutManager(layoutManager);
+        // add the client adapter
         recyclerView.setAdapter(adapter);
 
         final TextView textView = root.findViewById(R.id.recent_title_label);
@@ -90,11 +103,13 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
+    //
     private void jsonParse() {
         // local - http://api.sanalapi.test/api/client?user_id=10
         // scweb - https://alin.scweb.ca/SanalAPI/api/client?user_id=7
 
-        String url = "https://alin.scweb.ca/SanalAPI/api/client?user_id=7";
+        //get request for clients realted to the user subject, so id
+        String url = "https://alin.scweb.ca/SanalAPI/api/client?user_id="+jwt.getSubject();
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -113,8 +128,10 @@ public class HomeFragment extends Fragment {
                                 String phone = client.getString("client_phone");
                                 String address = client.getString("client_address");
 
+                                // create a new client object and add to list
                                 clientList.add(new ClientItem(id, R.drawable.ic_more_vert_black_24dp, name, email, phone, address));
 
+                                // add it to the recycler view
                                 adapter = new ClientAdapter(clientList);
                                 recyclerView.setLayoutManager(layoutManager);
                                 recyclerView.setAdapter(adapter);
@@ -134,6 +151,7 @@ public class HomeFragment extends Fragment {
         requestQueue.add(jsonObjectRequest);
     }
 
+    // Method for adding the clients
     public void dialogBox() {
 
         final View dialogView = View.inflate(getContext(),R.layout.add_client,null);
@@ -160,14 +178,14 @@ public class HomeFragment extends Fragment {
                             object.put("client_address",address.getText().toString());
                             object.put("client_phone",phone.getText().toString());
                             object.put("client_email",email.getText().toString());
-                            object.put("user_id",7);
+                            object.put("user_id",jwt.getSubject());
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                         // Enter the correct url for your api service site
                         //local http://api.sanalapi.test/api/client?user_id=10
                         // scweb = https://alin.scweb.ca/SanalAPI/api/client?user_id=7
-                        String url = "https://alin.scweb.ca/SanalAPI/api/client?user_id=7";
+                        String url = "https://alin.scweb.ca/SanalAPI/api/client?user_id="+jwt.getSubject();
                         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, object,
                                 new Response.Listener<JSONObject>() {
                                     @Override

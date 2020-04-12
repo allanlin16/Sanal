@@ -11,6 +11,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/listTitle"
             android:layout_weight="1"
+            android:textAlignment="center"
+            android:textSize="15dp"
             android:layout_gravity="center_horizontal"/>
 
         <ImageView
