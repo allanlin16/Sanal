@@ -99,8 +99,6 @@ public class BuildingFragment extends Fragment {
             }
         });
 
-        //
-
         requestQueue = Volley.newRequestQueue(getContext());
         addBuildingFab = root.findViewById(R.id.addBuildingFab);
         addExtinguisherFab = root.findViewById(R.id.addExtinguisherFab);
@@ -132,7 +130,6 @@ public class BuildingFragment extends Fragment {
 
         //set the expanablelistview
         expandableListView = root.findViewById(R.id.expandableListView);
-        //expandableListDetail = ExpandableListViewData.getData();
 
         final List<BuildingItem> buildingItems = new ArrayList<>();
 
@@ -612,7 +609,7 @@ public class BuildingFragment extends Fragment {
                                                     "photo");
 
                                             //create a new array list and add the new object
-                                            List<ExtinguisherItem> buildingExtinguisher = new ArrayList<>();
+                                            List<ExtinguisherItem> buildingExtinguisher = buildingIdExtinguisher.get(selectedBuildingId);
                                             buildingExtinguisher.add(extinguisherItem);
 
                                             buildingIdExtinguisher.put(selectedBuildingId, buildingExtinguisher);

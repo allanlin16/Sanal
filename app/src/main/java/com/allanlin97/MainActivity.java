@@ -50,30 +50,21 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
 
-                SharedPreferences mySPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                SharedPreferences.Editor editor = mySPrefs.edit();
 
                 // remove access token form sharedPreferences signs user out
                 SharedPreferences preferences = getSharedPreferences("MY_APP", Context.MODE_PRIVATE);
-                String retrivedToken  = preferences.getString("TOKEN",null);
-                editor.remove(retrivedToken);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.clear();
                 editor.apply();
+                finish();
+                Toast.makeText(getApplicationContext(),"Sign out",Toast.LENGTH_LONG).show();
 
                 Intent myIntent = new Intent(getApplicationContext(), LoginInActivity.class);
                 startActivity(myIntent);
                 return true;
             }
         });
-
-
-
-
-
-
     }
-
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
