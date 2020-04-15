@@ -95,12 +95,9 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
     public View getGroupView(final int listPosition, boolean isExpanded,
                              View convertView, final ViewGroup parent) {
 
-        buildingDetails.get(listPosition).getBuildingName();
-        buildingDetails.get(listPosition).getBuildingAddress();
-        buildingDetails.get(listPosition).getBuildingCity();
-        buildingDetails.get(listPosition).getBuildingPostalCode();
+        final CustomExpandableListAdapter finalAdapter = this;
 
-        String buildingD = buildingDetails.get(listPosition).getBuildingName() + " " +
+        final String buildingD = buildingDetails.get(listPosition).getBuildingName() + " " +
                 buildingDetails.get(listPosition).getBuildingAddress() + " " +
                 buildingDetails.get(listPosition).getBuildingCity()+ " " +
                 buildingDetails.get(listPosition).getBuildingPostalCode();
@@ -122,7 +119,7 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 
                     @Override
-                    public boolean onMenuItemClick(MenuItem item) {
+                    public boolean onMenuItemClick(final MenuItem item) {
                         // TODO Auto-generated method stub
                         switch (item.getItemId()) {
                             case R.id.edit:
@@ -136,7 +133,6 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
                                 final EditText buildingAddress = dialogView.findViewById(R.id.editBuildingAddress);
                                 final EditText buildingCity =  dialogView.findViewById(R.id.editBuildingCity);
                                 final EditText buildingPostalCode =  dialogView.findViewById(R.id.editBuildingPostalCode);
-
 
                                 alertDialogBuilder.setPositiveButton("Update",
                                         new DialogInterface.OnClickListener() {
@@ -161,8 +157,34 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
                                                         new Response.Listener<JSONObject>() {
                                                             @Override
                                                             public void onResponse(JSONObject response) {
+                                                                JSONObject jsonResponse = null;
+                                                                try {
+                                                                    jsonResponse = response.getJSONObject("data");
+                                                                    Long id = jsonResponse.getLong("id");
+                                                                    String name = jsonResponse.getString("building_name");
+                                                                    String address = jsonResponse.getString("building_address");
+                                                                    String city = jsonResponse.getString("building_city");
+                                                                    String pc = jsonResponse.getString("building_postalcode");
+                                                                    //TODO: update building
+
+                                                                    for (int i = 0; i < buildingDetails.size(); i++) {
+                                                                        if (buildingDetails.get(i).getId() == id) {
+                                                                            buildingDetails.get(i).setBuildingName(name);
+                                                                            buildingDetails.get(i).setBuildingAddress(address);
+                                                                            buildingDetails.get(i).setBuildingCity(city);
+                                                                            buildingDetails.get(i).setBuildingName(pc);
+                                                                            break;
+                                                                        }
+                                                                    }
+                                                                    finalAdapter.notifyDataSetChanged();
+
+                                                                } catch (JSONException e) {
+                                                                    e.printStackTrace();
+                                                                }
+
                                                                 Toast.makeText(parent.getContext(), "Building Updated!", Toast.LENGTH_LONG).show();
                                                                 //TODO: update the expanablelistview
+
                                                             }
                                                         }, new Response.ErrorListener() {
                                                     @Override
@@ -193,6 +215,9 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
                                 break;
 
                             case R.id.delete:
+
+
+
                                 RequestQueue requestQueue = Volley.newRequestQueue(parent.getContext());
                                 JSONArray object = new JSONArray();
                                 // TODO: remove from adapter expandableListTitle.removeAll();
@@ -201,8 +226,15 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
                                         new Response.Listener<JSONArray>() {
                                             @Override
                                             public void onResponse(JSONArray response) {
-                                                System.out.println("del");
                                                 Toast.makeText(parent.getContext(), "Building Deleted", Toast.LENGTH_LONG).show();
+                                                Long buildingId = buildingDetails.get(listPosition).getId();
+
+                                                for (int i = 0; i < buildingDetails.size(); i++) {
+                                                    if (buildingDetails.get(i).getId() == buildingId) {
+                                                        buildingDetails.remove(i);
+                                                    }
+                                                }
+                                                finalAdapter.notifyDataSetChanged();
                                             }
 
                                         }, new Response.ErrorListener() {
@@ -228,6 +260,9 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
         listTitleTextView.setText(buildingD);
         return convertView;
     }
+
+
+
 
     @Override
     public boolean hasStableIds() {

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -50,6 +51,14 @@ public class LoginInActivity extends AppCompatActivity {
         email = findViewById(R.id.email);
         password = findViewById(R.id.password);
 
+        SharedPreferences preferences = getSharedPreferences("MY_APP", Context.MODE_PRIVATE);
+        String username = preferences.getString("TOKEN",null);
+
+        // check shared preference if not null then sign in user
+        if (username != null ) {
+            Intent myIntent = new Intent(LoginInActivity.this, MainActivity.class);
+            startActivity(myIntent);
+        }
 
 
         findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
@@ -70,12 +79,19 @@ public class LoginInActivity extends AppCompatActivity {
 
                                     SharedPreferences preferences = getApplication().getSharedPreferences("MY_APP", Context.MODE_PRIVATE);
                                     preferences.edit().putString("TOKEN",token).apply();
+
+                                    if (preferences != null) {
+                                        Intent myIntent = new Intent(LoginInActivity.this, MainActivity.class);
+                                        startActivity(myIntent);
+                                    } else {
+                                        Toast.makeText(getBaseContext(), "Please Log in", Toast.LENGTH_LONG).show();
+                                    }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
+                                    Toast.makeText(getBaseContext(), "Please Log in", Toast.LENGTH_LONG).show();
                                 }
-                                Log.d("Response", response);
-                                Intent myIntent = new Intent(LoginInActivity.this, MainActivity.class);
-                                startActivity(myIntent);
+
+
                             }
                         },
                         new Response.ErrorListener()
@@ -141,13 +157,18 @@ public class LoginInActivity extends AppCompatActivity {
                                     @Override
                                     public void onResponse(String response) {
 
+                                        if (password == confirmPassword) {
+                                            Toast.makeText(getApplicationContext(), "Account Created", Toast.LENGTH_LONG).show();
+                                        } else {
+                                            Toast.makeText(getApplicationContext(), "Invalid Credentials, Please Try Again", Toast.LENGTH_LONG).show();
+                                        }
                                     }
                                 },
                                 new Response.ErrorListener()
                                 {
                                     @Override
                                     public void onErrorResponse(VolleyError error) {
-                                        //Error toast message
+                                        Toast.makeText(getApplicationContext(), "Invalid Credentials, Please Try Again", Toast.LENGTH_LONG).show();
 
                                     }
                                 }

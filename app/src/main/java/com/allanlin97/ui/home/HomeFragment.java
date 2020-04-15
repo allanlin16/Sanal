@@ -55,10 +55,12 @@ public class HomeFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
 
         // get the acess token from the shared preferences
+
         SharedPreferences preferences = getActivity().getSharedPreferences("MY_APP", Context.MODE_PRIVATE);
         String retrivedToken  = preferences.getString("TOKEN",null);//second parameter default value.
         //create a new jwt
-        jwt = new JWT(retrivedToken);
+
+            jwt = new JWT(retrivedToken);
 
         homeViewModel =
                 ViewModelProviders.of(this).get(HomeViewModel.class);
