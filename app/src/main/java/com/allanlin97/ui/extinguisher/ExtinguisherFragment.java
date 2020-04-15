@@ -1,11 +1,13 @@
 package com.allanlin97.ui.extinguisher;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,14 +18,15 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TextView;
+
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
+
 import androidx.lifecycle.ViewModelProviders;
+import androidx.loader.content.CursorLoader;
 
 import com.allanlin97.R;
 import com.android.volley.Request;
@@ -32,11 +35,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.squareup.picasso.Picasso;
 
-import org.json.JSONArray;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -56,6 +62,8 @@ public class ExtinguisherFragment extends Fragment {
     Spinner type, rating, status;
     RequestQueue requestQueue;
     long extinguisher_id;
+    Bitmap bitmap;
+    String photoUrl2;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         extinguisherViewModel = ViewModelProviders.of(this).get(ExtinguisherViewModel.class);
@@ -139,6 +147,9 @@ public class ExtinguisherFragment extends Fragment {
         updateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
+
                 RequestQueue requestQueue = Volley.newRequestQueue(getContext());
                 JSONObject object = new JSONObject();
                 try {
@@ -156,7 +167,6 @@ public class ExtinguisherFragment extends Fragment {
                     object.put("extinguisher_nextservicedate", nSDateEditText.getText().toString());
                     object.put("extinguisher_comment", commentEditText.getText().toString());
                     object.put("extinguisher_status", status.getSelectedItem().toString());
-                    object.put("extinguisher_photourl", "gg");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -317,6 +327,12 @@ public class ExtinguisherFragment extends Fragment {
                             int hold3 = adapter3.getPosition(statusValue);
                             status.setSelection(hold3);
                             commentEditText.setText(comment);
+
+                            System.out.println(photoUrl2);
+                            Picasso.get().load(photoUrl2).into(imageView);
+
+
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -331,6 +347,39 @@ public class ExtinguisherFragment extends Fragment {
                     }
                 });
         requestQueue.add(jsonObjectRequest);
+
+        if (bitmap != null) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+        byte[] byteArray = byteArrayOutputStream .toByteArray();
+
+
+            final RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+            JSONObject object = new JSONObject();
+            try {
+                object.put("file", byteArray);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+            String url2 = "https://alin.scweb.ca/SanalAPI/api/extinguisher/" + extinguisher_id + "/file-upload";
+            JsonObjectRequest jsonObjectRequest2 = new JsonObjectRequest(Request.Method.POST, url2, object,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Toast.makeText(getContext(), "Photo Uploaded", Toast.LENGTH_LONG).show();
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    error.printStackTrace();
+                }
+
+            });
+            requestQueue.add(jsonObjectRequest2);
+        }
 
         return root;
     }
@@ -363,15 +412,55 @@ public class ExtinguisherFragment extends Fragment {
 
     }
 
+    // Camera Activity
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == 7 && resultCode == RESULT_OK) {
-
-            Bitmap bitmap = (Bitmap) data.getExtras().get("data");
-
+            bitmap = (Bitmap) data.getExtras().get("data");
             imageView.setImageBitmap(bitmap);
+
+            // CALL THIS METHOD TO GET THE URI FROM THE BITMAP
+            Uri tempUri = getImageUri(getContext(), bitmap);
+            String filePath = getPath(tempUri);
+
+            String url = "https://alin.scweb.ca/SanalAPI/api/extinguisher/" + extinguisher_id + "/file-upload";
+
+            SimpleMultiPartRequest request = new SimpleMultiPartRequest(url, new File(filePath), new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            }, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    ;
+                }
+            });
+
+            RequestQueue mRequestQueue = Volley.newRequestQueue(getContext());
+            mRequestQueue.add(request);
+            mRequestQueue.start();
+
         }
+    }
 
 
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
+    //Set Image path
+    private String getPath(Uri contentUri) {
+        String[] proj = { MediaStore.Images.Media.DATA };
+        CursorLoader loader = new CursorLoader(getContext(), contentUri, proj, null, null, null);
+        Cursor cursor = loader.loadInBackground();
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        String result = cursor.getString(column_index);
+        cursor.close();
+        return result;
     }
 }

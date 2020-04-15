@@ -99,8 +99,6 @@ public class BuildingFragment extends Fragment {
             }
         });
 
-        //
-
         requestQueue = Volley.newRequestQueue(getContext());
         addBuildingFab = root.findViewById(R.id.addBuildingFab);
         addExtinguisherFab = root.findViewById(R.id.addExtinguisherFab);
@@ -132,7 +130,6 @@ public class BuildingFragment extends Fragment {
 
         //set the expanablelistview
         expandableListView = root.findViewById(R.id.expandableListView);
-        //expandableListDetail = ExpandableListViewData.getData();
 
         final List<BuildingItem> buildingItems = new ArrayList<>();
 
@@ -312,14 +309,33 @@ public class BuildingFragment extends Fragment {
                             e.printStackTrace();
                         }
 
+
                         final long clientId = bundle.getLong("clientId");
                         String url = "https://alin.scweb.ca/SanalAPI/api/building?client_id="+clientId;
-                        System.out.println("" + clientId);
+                        //System.out.println("" + clientId);
                         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, object,
                                 new Response.Listener<JSONObject>() {
                                     @Override
                                     public void onResponse(JSONObject response) {
-                                        Toast.makeText(getContext(), "Building Created!", Toast.LENGTH_LONG).show();
+                                        JSONObject jsonResponse = null;
+                                        try {
+                                            jsonResponse = response.getJSONObject("data");
+                                            Long id = jsonResponse.getLong("id");
+                                            String name = jsonResponse.getString("building_name");
+                                            String address = jsonResponse.getString("building_address");
+                                            String city = jsonResponse.getString("building_city");
+                                            String pc = jsonResponse.getString("building_postalcode");
+
+                                            BuildingItem buildingItem = new BuildingItem(id, name, address, city, pc);
+
+                                            buildingDetails.add(buildingItem);
+
+                                            expandableListAdapter.notifyDataSetChanged();
+                                            Toast.makeText(getContext(), "Building Created!", Toast.LENGTH_LONG).show();
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+
                                     }
                                 }, new Response.ErrorListener() {
                             @Override
@@ -329,7 +345,7 @@ public class BuildingFragment extends Fragment {
 
                         });
                         requestQueue.add(jsonObjectRequest);
-                        expandableListAdapter.notifyDataSetChanged();
+
 
                     }
                 });
@@ -593,7 +609,7 @@ public class BuildingFragment extends Fragment {
                                                     "photo");
 
                                             //create a new array list and add the new object
-                                            List<ExtinguisherItem> buildingExtinguisher = new ArrayList<>();
+                                            List<ExtinguisherItem> buildingExtinguisher = buildingIdExtinguisher.get(selectedBuildingId);
                                             buildingExtinguisher.add(extinguisherItem);
 
                                             buildingIdExtinguisher.put(selectedBuildingId, buildingExtinguisher);
