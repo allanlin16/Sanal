@@ -330,6 +330,8 @@ public class BuildingFragment extends Fragment {
 
                                             buildingDetails.add(buildingItem);
 
+                                            buildingIdExtinguisher.put(buildingItem.getId(), new ArrayList<ExtinguisherItem>());
+
                                             expandableListAdapter.notifyDataSetChanged();
                                             Toast.makeText(getContext(), "Building Created!", Toast.LENGTH_LONG).show();
                                         } catch (JSONException e) {
@@ -609,6 +611,7 @@ public class BuildingFragment extends Fragment {
                                                     "photo");
 
                                             //create a new array list and add the new object
+                                            //create a new array list and add the new object
                                             List<ExtinguisherItem> buildingExtinguisher = buildingIdExtinguisher.get(selectedBuildingId);
                                             buildingExtinguisher.add(extinguisherItem);
 
@@ -746,8 +749,8 @@ public class BuildingFragment extends Fragment {
 
                                                 // display to the pdf
                                                 table.addCell(make);
-                                                table.addCell(area);
                                                 table.addCell(serialNumber);
+                                                table.addCell(area);
                                                 table.addCell(location);
                                                 table.addCell(nSDate);
                                                 table.addCell(statusValue);

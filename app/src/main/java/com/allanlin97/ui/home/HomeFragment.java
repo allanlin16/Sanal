@@ -110,7 +110,7 @@ public class HomeFragment extends Fragment {
         // local - http://api.sanalapi.test/api/client?user_id=10
         // scweb - https://alin.scweb.ca/SanalAPI/api/client?user_id=7
 
-        //get request for clients realted to the user subject, so id
+        //get request for clients related to the user subject, so id
         String url = "https://alin.scweb.ca/SanalAPI/api/client?user_id="+jwt.getSubject();
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
@@ -172,6 +172,7 @@ public class HomeFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
 
+                        //POST REQUEST for creating clients
                         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
                         JSONObject object = new JSONObject();
                         try {
@@ -193,6 +194,24 @@ public class HomeFragment extends Fragment {
                                     @Override
                                     public void onResponse(JSONObject response) {
                                         Toast.makeText(getContext(), "Client Created!", Toast.LENGTH_LONG).show();
+                                        JSONObject jsonResponse = null;
+                                        try {
+                                            jsonResponse = response.getJSONObject("data");
+                                            Long id = jsonResponse.getLong("id");
+                                            String name = jsonResponse.getString("client_name");
+                                            String add = jsonResponse.getString("client_address");
+                                            String ph = jsonResponse.getString("client_phone");
+                                            String email = jsonResponse.getString("client_email");
+
+                                            // add the new client to the object
+                                            ClientItem clientItem = new ClientItem(id,R.drawable.ic_more_vert_black_24dp, name, add, ph, email);
+
+                                            clientList.add(clientItem);
+
+                                            adapter.notifyDataSetChanged();
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
                                     }
                                 }, new Response.ErrorListener() {
                             @Override
@@ -202,8 +221,6 @@ public class HomeFragment extends Fragment {
                         });
                         requestQueue.add(jsonObjectRequest);
 
-                        ClientItem clientItem = new ClientItem(1,R.drawable.ic_more_vert_black_24dp, name.getText().toString(), address.getText().toString(), phone.getText().toString(), email.getText().toString());
-                        clientList.add(clientItem);
                     }
                 });
 

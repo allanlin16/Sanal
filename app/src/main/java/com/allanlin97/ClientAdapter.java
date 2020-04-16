@@ -34,6 +34,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+// Client Adapter for setting the cardview
+
 public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientViewHolder> {
 
     private ArrayList<ClientItem> clientList;
@@ -145,7 +147,6 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
                                     JSONArray object = new JSONArray();
                                     removeAt(getAdapterPosition());
                                     String url = "https://alin.scweb.ca/SanalAPI/api/client/"+client_id;
-                                    System.out.println("deleted" + client_id);
                                     JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(Request.Method.DELETE, url, object,
                                             new Response.Listener<JSONArray>() {
                                                 @Override
