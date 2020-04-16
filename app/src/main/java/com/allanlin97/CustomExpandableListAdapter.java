@@ -114,7 +114,8 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
             public void onClick(View view) {
                 PopupMenu popup = new PopupMenu(parent.getContext(), view);
 
-                /** Adding menu items to the popumenu */
+
+                // PUT request for updating the building
                 popup.getMenuInflater().inflate(R.menu.edit_delete_menu, popup.getMenu());
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 
@@ -167,12 +168,13 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
                                                                     String pc = jsonResponse.getString("building_postalcode");
                                                                     //TODO: update building
 
+                                                                    // get the response and update the building details with the update values
                                                                     for (int i = 0; i < buildingDetails.size(); i++) {
                                                                         if (buildingDetails.get(i).getId() == id) {
                                                                             buildingDetails.get(i).setBuildingName(name);
                                                                             buildingDetails.get(i).setBuildingAddress(address);
                                                                             buildingDetails.get(i).setBuildingCity(city);
-                                                                            buildingDetails.get(i).setBuildingName(pc);
+                                                                            buildingDetails.get(i).setBuildingPostalCode(pc);
                                                                             break;
                                                                         }
                                                                     }
@@ -183,7 +185,6 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
                                                                 }
 
                                                                 Toast.makeText(parent.getContext(), "Building Updated!", Toast.LENGTH_LONG).show();
-                                                                //TODO: update the expanablelistview
 
                                                             }
                                                         }, new Response.ErrorListener() {
@@ -231,6 +232,7 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
 
                                                 for (int i = 0; i < buildingDetails.size(); i++) {
                                                     if (buildingDetails.get(i).getId() == buildingId) {
+                                                        // remove from list position once the delete request was successful
                                                         buildingDetails.remove(i);
                                                     }
                                                 }
@@ -269,11 +271,13 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
         return false;
     }
 
+    // check which list item was selected
     @Override
     public boolean isChildSelectable(int listPosition, int expandedListPosition) {
         return true;
     }
 
+    // notify the adapter if any changes where made to the list
     @Override
     public void notifyDataSetChanged() {
         super.notifyDataSetChanged();

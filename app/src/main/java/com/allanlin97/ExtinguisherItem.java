@@ -17,6 +17,8 @@ public class ExtinguisherItem {
     private String status;
     private String photo;
 
+    // getter and setting for extinguisher object
+
     public ExtinguisherItem(long id, String make, String serialNumber, String barcodeNumber,
                             String area, String description, String type, String rating,
                             String mDate, String hDate, String sDate, String nSDate,

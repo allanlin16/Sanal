@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
                 finish();
                 Toast.makeText(getApplicationContext(),"Sign out",Toast.LENGTH_LONG).show();
 
+                // return user to the sign in screen
                 Intent myIntent = new Intent(getApplicationContext(), LoginInActivity.class);
                 startActivity(myIntent);
                 return true;

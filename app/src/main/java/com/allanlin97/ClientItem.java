@@ -3,6 +3,8 @@ package com.allanlin97;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+// Client Getter and Setters
+
 public class ClientItem implements Parcelable {
     private long id;
     private String clientName;
