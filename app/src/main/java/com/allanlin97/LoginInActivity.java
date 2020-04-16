@@ -39,7 +39,6 @@ public class LoginInActivity extends AppCompatActivity {
     TextView registerTextView;
     EditText email, password;
     RequestQueue requestQueue;
-    SharedPreferences sharedpreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +50,7 @@ public class LoginInActivity extends AppCompatActivity {
         email = findViewById(R.id.email);
         password = findViewById(R.id.password);
 
+        // store get user access token in the shared preference
         SharedPreferences preferences = getSharedPreferences("MY_APP", Context.MODE_PRIVATE);
         String username = preferences.getString("TOKEN",null);
 
@@ -72,15 +72,16 @@ public class LoginInActivity extends AppCompatActivity {
                             @Override
                             public void onResponse(String response) {
                                 // response
-
                                 try {
                                     JSONObject jsonObject = new JSONObject(response);
                                     String token = jsonObject.getString("access_token");
 
+                                    // store get user access token in the shared preference
                                     SharedPreferences preferences = getApplication().getSharedPreferences("MY_APP", Context.MODE_PRIVATE);
                                     preferences.edit().putString("TOKEN",token).apply();
 
                                     if (preferences != null) {
+                                        // if user is not null we auto sign them in
                                         Intent myIntent = new Intent(LoginInActivity.this, MainActivity.class);
                                         startActivity(myIntent);
                                     } else {
@@ -157,12 +158,9 @@ public class LoginInActivity extends AppCompatActivity {
                                     @Override
                                     public void onResponse(String response) {
 
-                                        if (password == confirmPassword) {
-                                            Toast.makeText(getApplicationContext(), "Account Created", Toast.LENGTH_LONG).show();
-                                        } else {
-                                            Toast.makeText(getApplicationContext(), "Invalid Credentials, Please Try Again", Toast.LENGTH_LONG).show();
-                                        }
+                                        Toast.makeText(getApplicationContext(), "Account Created", Toast.LENGTH_LONG).show();
                                     }
+
                                 },
                                 new Response.ErrorListener()
                                 {

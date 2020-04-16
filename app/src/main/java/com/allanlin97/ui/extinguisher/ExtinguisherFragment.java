@@ -85,6 +85,7 @@ public class ExtinguisherFragment extends Fragment {
 
         requestQueue = Volley.newRequestQueue(getContext());
 
+        // spinner values
         final String[] typeSpinner = new String[] {
                 "Water", "Foam", "Dry Powder", "CO2", "Wet Chemical"
         };
@@ -149,7 +150,7 @@ public class ExtinguisherFragment extends Fragment {
             public void onClick(View v) {
 
 
-
+                // PUT Request for extinguisher we check the extinguisher id
                 RequestQueue requestQueue = Volley.newRequestQueue(getContext());
                 JSONObject object = new JSONObject();
                 try {
@@ -177,7 +178,6 @@ public class ExtinguisherFragment extends Fragment {
                             @Override
                             public void onResponse(JSONObject response) {
                                 Toast.makeText(getContext(), "Extinguisher Updated!", Toast.LENGTH_LONG).show();
-                                //TODO: update the layout
 
                             }
                         }, new Response.ErrorListener() {
@@ -309,8 +309,9 @@ public class ExtinguisherFragment extends Fragment {
                             String nSDate = jsonResponse.getString("extinguisher_nextservicedate");
                             String statusValue = jsonResponse.getString("extinguisher_status");
                             String comment = jsonResponse.getString("extinguisher_comment");
-                            String photoUrl = jsonResponse.getString("extinguisher_photourl");
+                            String photo = jsonResponse.getString("extinguisher_photourl");
 
+                            // set the edit text from get request response
                             makeEditText.setText(make);
                             serialNumberEditText.setText(serialNumber);
                             barcodeEditText.setText(barcode);
@@ -328,10 +329,10 @@ public class ExtinguisherFragment extends Fragment {
                             status.setSelection(hold3);
                             commentEditText.setText(comment);
 
+                            photoUrl2 = "https://alin.scweb.ca/SanalAPI/"+photo;
+
                             System.out.println(photoUrl2);
                             Picasso.get().load(photoUrl2).into(imageView);
-
-
 
                         } catch (JSONException e) {
                             e.printStackTrace();
